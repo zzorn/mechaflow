@@ -6,13 +6,9 @@ package gizmoflow
 // TODO: What about distinct input/output ports?  E.g. item ports and information ports could be that..  They could be two way too though.
 
 // TODO: Which party takes care of updating transfers?  both?
-trait Port {
+case class Port(name: Symbol, node: Node, portType: StuffType) {
 
   private var _connectedPort: Port = null
-
-  def node: Node
-  def name: Symbol
-  def portType: PortType
 
   def connectedPort: Port = _connectedPort
 
