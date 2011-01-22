@@ -1,9 +1,10 @@
 package gizmoflow.material
 
+import scalaquantity.Units._
+
 /**
- * A mix of different types of materials in some concentrations.
- * The concentrations map defines relative amounts of the specified materials.
+ * A mix of different amounts of various materials.
  */
-case class Mixture(concentrations: Map[Double, Material]) extends Material {
+case class Mixture(materials: Map[Material, Mass]) {
   
 }

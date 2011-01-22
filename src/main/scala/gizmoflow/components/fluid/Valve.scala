@@ -1,11 +1,11 @@
 package gizmoflow.components.fluid
 
-import gizmoflow.{FluidStuff, Node}
+import gizmoflow.{FluidStuff, Gizmo}
 
 /**
  * One way valve
  */
-class Valve extends Node {
+class Valve extends Gizmo {
   
   addPort('inflow, FluidStuff)
   addPort('outflow, FluidStuff)

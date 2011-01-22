@@ -1,13 +1,13 @@
 package gizmoflow.components.fluid
 
 import scalaquantity.Units._
-import gizmoflow.{FluidStuff, Node}
+import gizmoflow.{FluidStuff, Gizmo}
 import gizmoflow.material.{Matter, NoMatter}
 
 /**
  * A pipe in a T junction.  Can have a connection in each direction.
  */
-class Junction(radius: Length) extends Node  {
+class Junction(radius: Length) extends Gizmo  {
 
   addPort('a, FluidStuff)
   addPort('b, FluidStuff)
