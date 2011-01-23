@@ -8,16 +8,18 @@ import scalaquantity.Units._
  */
 case class Matter(material: Material,
                   var mass: kg,
-                  var temperature: Temperature) {
+                  var temperature: Temperature,
+                  var phase: Phase) {
 
-  def phase(pressure: Pressure): Phase = material.phases(temperature, pressure)
-
-  def density(pressure: Pressure): Density = {
-    val p: Phase = phase(pressure)
-    // Assume density is specified at 20 degrees celsius.
-    p.density * p.volumetricThermalExpansion * (temperature - fromCelsius(20))
+  def updatePhase(duration: Time, pressure: Pressure) {
+    phase = material.phases(temperature, pressure)
   }
 
+  def density: Density = {
+    // Assume density is specified at 20 degrees celsius.
+    phase.density * phase.volumetricThermalExpansion * (temperature - fromCelsius(20))
+  }
 
+  def volume: Volume = density * mass
   
 }

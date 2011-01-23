@@ -6,4 +6,4 @@ object Solid extends MaterialState
 object Liquid extends MaterialState
 object Gaseous extends MaterialState
 object Plasma extends MaterialState
-object SuperCritical extends MaterialState
+object Supercritical extends MaterialState

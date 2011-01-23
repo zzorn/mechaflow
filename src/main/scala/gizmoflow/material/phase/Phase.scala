@@ -10,5 +10,6 @@ case class Phase(name: Symbol,
                  density: Density,
                  specificHeatCapacity: SpecificHeatCapacity,
                  volumetricThermalExpansion: One/Temperature,
-                 viscosity: DynamicViscosity   ) {
+                 viscosity: DynamicViscosity,
+                 compressibility: One/Pressure) {
 }
