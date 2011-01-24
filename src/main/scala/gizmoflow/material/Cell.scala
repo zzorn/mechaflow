@@ -2,6 +2,7 @@ package gizmoflow.material
 
 import phase._
 import scalaquantity.Units._
+import gizmoflow.PhysicsConstants._
 
 /**
  * A fixed volume that contains some matter.
@@ -9,6 +10,9 @@ import scalaquantity.Units._
 class Cell(volume: Volume) {
 
   private var matters: Map[Material, Matter] = Map()
+  private var _pressure: Pressure = 0
+
+  def pressure = _pressure
 
   def add(material: Material, amount: Mass, temperature: Temperature) {
 
@@ -35,29 +39,58 @@ class Cell(volume: Volume) {
 
   def updatePressure(duration: Time): Pressure = {
 
-    val solidVolume: Volume = 0
-    val liquidVolume: Volume = 0
+    val solidAndLiquidVolume: Volume = 0
     matters.values.foreach { matter: Matter =>
       matter.phase.state match {
-        case Solid  => solidVolume  += matter.volume
-        case Liquid => liquidVolume += matter.volume
+        case Solid | Liquid => solidAndLiquidVolume += matter.volume
       }
     }
 
-    if (solidVolume + liquidVolume > volume) {
-      // calculate pressure
+    var pressure: Pressure = 0
+    if (solidAndLiquidVolume  > volume) {
+      // Calculate pressure based on compressibility of the materials
 
-      // TODO: Later, Expand container, calculate pressure, burst container if too high
-      
+      // The contribution of gas to this pressure is ignored..
+
+      val overVolume = solidAndLiquidVolume - volume
+
+      matters.values.foreach { matter: Matter =>
+        matter.phase.state match {
+          case Solid | Liquid  =>
+            // Get part of volume
+            val v = matter.volume
+            val part = v / solidAndLiquidVolume
+
+            // Compress it with that much (not entirely accurate, but maybe close enough for a timestepping simulation
+            val neededVolumeCompression = overVolume * part
+            pressure += part * (neededVolumeCompression / (v * matter.phase.compressibility))
+        }
+      }
+    }
+    else {
+      // There is space for gas, calculate pressure from it
+      val gasVolume: Volume = volume - solidAndLiquidVolume
+
+      // Daltons atomic theory: The total pressure of a mixture of gases equals the sum of the pressures
+      // that each would exert if it were present alone
+      matters.values.foreach { matter: Matter =>
+        matter.phase.state match {
+          case Gaseous =>
+            val moles: mol = matter.mass / matter.phase.molarMass
+
+            // Universal gas law:
+            pressure += (moles * UniversalGasConstant * matter.temperature) / gasVolume
+        }
+      }
+
     }
 
 
-    // Solids
+    // TODO: Later, Expand container (both from pressure and temperature expansion),
+    //       and burst container if pressure is too high
 
-    // Liquids
 
-
-    // Gases
+    _pressure = pressure
 
   }
 
