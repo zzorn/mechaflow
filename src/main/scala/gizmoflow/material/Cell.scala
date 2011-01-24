@@ -86,7 +86,7 @@ class Cell(volume: Volume) {
     }
 
 
-    // TODO: Later, Expand container (both from pressure and temperature expansion),
+    // TODO: Later, Expand or shrink container (both from pressure difference and temperature expansion),
     //       and burst container if pressure is too high
 
 
