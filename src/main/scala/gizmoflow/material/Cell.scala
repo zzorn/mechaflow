@@ -52,26 +52,28 @@ class Cell(volume: Volume) {
 
       // The contribution of gas to this pressure is ignored..
 
+      /*
+         Generalized from solved three material equation:
+         p = (deltaVolume/Volume) / (materialMass1 / materialDensity1 * materialCompressibility1 +
+                                     materialMass2 / materialDensity2 * materialCompressibility2 +
+                                      ...
+                                     materialMassN / materialDensityN * materialCompressibilityN )
+       */
+
       val overVolume = solidAndLiquidVolume - volume
 
+      var constantSum: Volume/Pressure = 0 * m3/Pascal
       matters.values.foreach { matter: Matter =>
         matter.phase.state match {
-          case Solid | Liquid  =>
-            // Get part of volume
+          case Solid | Liquid =>
             val v = matter.volume
-            val part = v / solidAndLiquidVolume
-
-            // Compress it with that much
-
-            val neededVolumeCompression = overVolume * part
-            val p = (neededVolumeCompression / (v * matter.phase.compressibility))
-
-            // Use maximum compression as the total pressure needed
-            // (not accurate for materials with very different compressbility, but maybe close enough for a
-            // timestepping simulation - actually differently compressing materials would compress by different amounts)
-            if (p > pressure) pressure = p
+            val c = matter.phase.compressibility
+            constantSum += v * c
         }
       }
+
+      if (constantSum == 0) pressure = 0
+      else pressure = (overVolume / volume) / constantSum
     }
     else {
       // There is space for gas, calculate pressure from it
@@ -88,9 +90,10 @@ class Cell(volume: Volume) {
             pressure += (moles * UniversalGasConstant * matter.temperature) / gasVolume
         }
       }
-
     }
 
+    // TODO: Effect of external force field (acceleration, gravitation)
+    
 
     // TODO: Later, Expand or shrink container (both from pressure difference and temperature expansion),
     //       and burst container if pressure is too high
