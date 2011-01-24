@@ -61,9 +61,15 @@ class Cell(volume: Volume) {
             val v = matter.volume
             val part = v / solidAndLiquidVolume
 
-            // Compress it with that much (not entirely accurate, but maybe close enough for a timestepping simulation
+            // Compress it with that much
+
             val neededVolumeCompression = overVolume * part
-            pressure += part * (neededVolumeCompression / (v * matter.phase.compressibility))
+            val p = (neededVolumeCompression / (v * matter.phase.compressibility))
+
+            // Use maximum compression as the total pressure needed
+            // (not accurate for materials with very different compressbility, but maybe close enough for a
+            // timestepping simulation - actually differently compressing materials would compress by different amounts)
+            if (p > pressure) pressure = p
         }
       }
     }
