@@ -73,7 +73,7 @@ class Cell(volume: Volume) {
       }
 
       if (constantSum == 0) pressure = 0
-      else pressure = (overVolume / volume) / constantSum
+      else pressure = (overVolume.value / volume.value) / constantSum
     }
     else {
       // There is space for gas, calculate pressure from it
