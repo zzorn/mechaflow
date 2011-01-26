@@ -1,8 +1,9 @@
-package gizmoflow.material
+package gizmoflow.cell
 
-import phase._
 import scalaquantity.Units._
 import gizmoflow.PhysicsConstants._
+import gizmoflow.material.{Matter, Material}
+import gizmoflow.material.phase._
 
 /**
  * A fixed volume that contains some matter.
@@ -14,6 +15,19 @@ class Cell(volume: Volume) {
 
   def pressure = _pressure
 
+  def simulateTick(duration: Time) {
+    updatePressure(duration);
+
+    // TODO: Calculate pressure at each port
+  }
+  
+  def simulateTock(duration: Time) {
+    // TODO: Calculate flow using Bernoullis principle
+
+
+  }
+  
+  
   def add(material: Material, amount: Mass, temperature: Temperature) {
 
   }
