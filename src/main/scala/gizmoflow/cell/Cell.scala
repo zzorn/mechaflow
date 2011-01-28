@@ -4,11 +4,22 @@ import scalaquantity.Units._
 import gizmoflow.PhysicsConstants._
 import gizmoflow.material.{Matter, Material}
 import gizmoflow.material.phase._
+import scalaquantity.Units
 
 /**
  * A fixed volume that contains some matter.
  */
-class Cell(volume: Volume) {
+class Cell(val radius: Length, val length: Length) {
+
+  lazy val volume: Volume = math.Pi * radius * radius * length
+  private lazy val radius4: m~m~m~m = radius * radius * radius * radius
+
+  var cellPorts: List[CellPort] = Nil
+
+  var externalAccelerationField: AccelerationField = NoAccelerationField
+
+  private val endLaminarReynolds = 2300.0
+  private val startTurbulentReynolds = 4000.0
 
   private var matters: Map[Material, Matter] = Map()
   private var _pressure: Pressure = 0
@@ -50,6 +61,71 @@ class Cell(volume: Volume) {
 
   }
 
+  def calculateFlow() {
+    cellPorts foreach calculateFlowToCenter(_)
+  }
+
+  /**
+   * Calculates the Reynolds number for the flow speed from a cell port to the center
+   * ( https://secure.wikimedia.org/wikipedia/en/wiki/Reynolds_number ).
+   */
+  def calculateReynoldsNumber(port: CellPort, matter: Matter): Double =
+  {
+    // Calculate Reynolds number
+    val flow = if (port.inFlow < 0) -port.inFlow else port.inFlow
+    val velocity = flow / port.area
+    val density = matter.phase.density
+    val Dh = port.hydraulicDiameter
+    val dynamicViscosity = matter.phase.dynamicViscosity
+    density * velocity * Dh / dynamicViscosity
+  }
+
+  /**
+   * Calculate the flow from the specified port to the center of the cell.
+   * The center of the cell is at origo.
+   */
+  private def calculateFlowToCenter(port: CellPort) {
+
+    // Calculate acceleration force differential between the center and the port
+
+    // For each material:
+    matters.values.foreach { matter: Matter =>
+
+      val reynolds = calculateReynoldsNumber(port, matter)// Calculate flow
+
+      port.inFlow = if (reynolds < endLaminarReynolds) calculateLaminarFlowToCenter(port, matter)
+                    else if (reynolds > startTurbulentReynolds)  calculateTurbulentFlowToCenter(port, matter)
+                    else calculateInterpolatedFlow(port, matter, reynolds)
+    }
+
+  }
+
+  def calculateInterpolatedFlow(port: CellPort, matter: Matter, reynolds: Double): m3/s = {
+    // Just do a simple interpolation, actual behaviour is probably chaotic.
+    val laminar = calculateLaminarFlowToCenter(port, matter)
+    val turbulent = calculateTurbulentFlowToCenter(port, matter)
+
+    val len = endLaminarReynolds - startTurbulentReynolds
+    val t = (reynolds - endLaminarReynolds) / len
+    laminar * (1.0 - t) + turbulent * t
+  }
+
+  /**
+   * Calculates laminar flow from a cell port to the center, using the Hagen-Poiseuille equation
+   * ( https://secure.wikimedia.org/wikipedia/en/wiki/Hagen-Poiseuille_flow ).
+   */
+  private def calculateLaminarFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+    val pressureDelta = port.pressure - pressure;
+    (math.Pi * radius4 * pressureDelta)  /
+    (8 * matter.phase.dynamicViscosity * port.distanceToCenter)
+  }
+
+  /**
+   * Calculates turbulent flow from a cell port to the center, using the Darcy-Weisbach equation
+   * ( https://secure.wikimedia.org/wikipedia/en/wiki/Darcy%E2%80%93Weisbach_equation ).
+   */
+  private def calculateTurbulentFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+  }
 
   def updatePressure(duration: Time): Pressure = {
 
