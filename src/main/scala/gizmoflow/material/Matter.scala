@@ -16,6 +16,8 @@ case class Matter(material: Material,
   }
 
   def density: Density = {
+    //TODO: For gases, this depends on the volume!
+
     // Assume density is specified at 20 degrees celsius.
     phase.density * phase.volumetricThermalExpansion * (temperature - fromCelsius(20))
   }

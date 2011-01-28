@@ -13,6 +13,7 @@ class Cell(val radius: Length, val length: Length) {
 
   lazy val volume: Volume = math.Pi * radius * radius * length
   private lazy val radius4: m~m~m~m = radius * radius * radius * radius
+  private lazy val diameter3: m~m~m = 2*radius * 2*radius * 2*radius
 
   var cellPorts: List[CellPort] = Nil
 
@@ -23,6 +24,8 @@ class Cell(val radius: Length, val length: Length) {
 
   private var matters: Map[Material, Matter] = Map()
   private var _pressure: Pressure = 0
+
+  private val Pi2 = math.Pi * math.Pi
 
   def pressure = _pressure
 
@@ -125,6 +128,12 @@ class Cell(val radius: Length, val length: Length) {
    * ( https://secure.wikimedia.org/wikipedia/en/wiki/Darcy%E2%80%93Weisbach_equation ).
    */
   private def calculateTurbulentFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+    val pressureDelta = port.pressure - pressure;
+    val density =  // TODO: For gases, depends on volume
+    val flowRate2 = (Pi2 * pressureDelta * diameter3) /
+                    (8 * f * port.distanceToCenter *  )
+
+
   }
 
   def updatePressure(duration: Time): Pressure = {
