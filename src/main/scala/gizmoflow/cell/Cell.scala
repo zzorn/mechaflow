@@ -6,6 +6,12 @@ import gizmoflow.material.{Matter, Material}
 import gizmoflow.material.phase._
 import scalaquantity.Units
 
+// TODO: Simplify:
+// TODO: Separate cells for liquid and gas?
+// TODO: Only treat the matter flowing through a pipe as a mixed material / solution that flows at one specific speed?
+// TODO: To separate a mix, use a container that allows some parts to fall down.
+// Things lost this way: cells where e.g. water boils to water vapor in the cell, etc..
+
 /**
  * A fixed volume that contains some matter.
  */
@@ -139,9 +145,11 @@ class Cell(val radius: Length, val length: Length) {
   def updatePressure(duration: Time): Pressure = {
 
     val solidAndLiquidVolume: Volume = 0
+    val gasVolume: Volume = 0
     matters.values.foreach { matter: Matter =>
       matter.phase.state match {
         case Solid | Liquid => solidAndLiquidVolume += matter.volume
+        case Gaseous =>
       }
     }
 
@@ -165,7 +173,7 @@ class Cell(val radius: Length, val length: Length) {
       matters.values.foreach { matter: Matter =>
         matter.phase.state match {
           case Solid | Liquid =>
-            val v = matter.volume
+            val v = matter.mass / matter.normalDensity
             val c = matter.phase.compressibility
             constantSum += v * c
         }
@@ -173,6 +181,14 @@ class Cell(val radius: Length, val length: Length) {
 
       if (constantSum == 0) pressure = 0
       else pressure = (overVolume.value / volume.value) / constantSum
+
+      // Set volume
+      matters.values.foreach { matter: Matter =>
+        matter.phase.state match {
+          case Solid | Liquid =>
+            matter.volume
+        }
+      }
     }
     else {
       // There is space for gas, calculate pressure from it
@@ -187,6 +203,8 @@ class Cell(val radius: Length, val length: Length) {
 
             // Universal gas law:
             pressure += (moles * UniversalGasConstant * matter.temperature) / gasVolume
+
+            matter.volume = gasVolume
         }
       }
     }
