@@ -6,23 +6,20 @@ package gizmoflow
 // TODO: What about distinct input/output ports?  E.g. item ports and information ports could be that..  They could be two way too though.
 
 // TODO: Which party takes care of updating transfers?  both?
-trait Port {
+class Port[T <: Port]() {
 
-  private var _connectedPort: Port = null
+  private var _connectedPort: Port[T] = null
 
-  def node: Node
-  def name: Symbol
-  def portType: PortType
-
-  def connectedPort: Port = _connectedPort
+  def connectedPort: Port[T] = _connectedPort
+  def getConnectedPort: Option[Port[T]] = if (_connectedPort == null) None else Some(_connectedPort)
 
   /**
    * Connects to the specified port.
    */
-  def connectTo(port: Port) {
+  def connectTo(port: Port[T]) {
     if (_connectedPort != port) {
       if (port == this) throw new IllegalArgumentException("Can not connect port "+this+" to itself")
-      if (port.portType != portType) throw new IllegalArgumentException("Can not connect port "+this+" to port "+port+": Incompatible port types")
+      // if (port.portType != portType) throw new IllegalArgumentException("Can not connect port "+this+" to port "+port+": Incompatible port types")
 
       disconnect()
 
