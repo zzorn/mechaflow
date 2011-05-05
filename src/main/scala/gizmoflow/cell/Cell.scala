@@ -118,6 +118,7 @@ class Cell(val radius: Length, val length: Length) {
    * ( https://secure.wikimedia.org/wikipedia/en/wiki/Hagen-Poiseuille_flow ).
    */
   private def calculateLaminarFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+    // TODO: Include weight of matter into pressure
     val pressureDelta = port.pressure - pressure;
     (math.Pi * radius4 * pressureDelta)  /
     (8 * matter.phase.dynamicViscosity * port.distanceToCenter)
@@ -128,6 +129,8 @@ class Cell(val radius: Length, val length: Length) {
    * ( https://secure.wikimedia.org/wikipedia/en/wiki/Darcy%E2%80%93Weisbach_equation ).
    */
   private def calculateTurbulentFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+    // TODO: Include weight of matter into pressure
+    // TODO: Use matter volume to calculate diameter
     val pressureDelta = port.pressure - pressure;
     val density =  // TODO: For gases, depends on volume
     val flowRate2 = (Pi2 * pressureDelta * diameter3) /
