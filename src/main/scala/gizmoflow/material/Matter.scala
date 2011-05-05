@@ -1,7 +1,8 @@
 package gizmoflow.material
 
-import phase.Phase
+import phase.{Gaseous, Phase}
 import scalaquantity.Units._
+import scalaquantity.{Units, Exponents}
 
 /**
  * Some amount of some material at a specific temperature.
@@ -17,10 +18,26 @@ case class Matter(material: Material,
   }
 
   def thermallyCorrectedDefaultDensity: Density = {
+    normalDensity
+  }
     //TODO: For gases, this depends on the volume!
+  def normalDensity: Density = {
+    val phaseDensity: Density = phase.density
+    val deg20: Temperature = fromCelsius(20.0)
+    val temp: Temperature = temperature
+    val temperatureDelta: Temperature = temp - deg20
+    val expansion: One/Temperature = phase.volumetricThermalExpansion
+    density * temperatureDelta * expansion
+  } // Assume density is specified at 20 degrees celsius.
 
-    // Assume density is specified at 20 degrees celsius.
-    phase.density * phase.volumetricThermalExpansion * (temperature - fromCelsius(20))
+  def density: Density = {
+    val calculatedDensity = mass / volume
+    if (phase.state == Gaseous) calculatedDensity
+    else {
+      // If the matter has been compressed, return the compressed density, otherwise the normal one
+      val nd = normalDensity
+      if (calculatedDensity > nd) calculatedDensity else nd
+    }
   }
 
   def densityFromVolumeAndMass: Density = mass / volume
