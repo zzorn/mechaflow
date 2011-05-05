@@ -12,7 +12,7 @@ case class Matter(material: Material,
                   var temperature: Temperature,
                   var phase: Phase,
                   var volume: Volume) {
-
+/*TODO
   def updatePhase(duration: Time, pressure: Pressure) {
     phase = material.phases(temperature, pressure)
   }
@@ -41,5 +41,5 @@ case class Matter(material: Material,
   }
 
   def densityFromVolumeAndMass: Density = mass / volume
-
+*/
 }

@@ -1,6 +1,10 @@
-package gizmoflow.material.phase
+package gizmoflow.material.phase.diagram
 
 import scalaquantity.Units._
+
+import gizmoflow.util.QuantityUtils._
+import gizmoflow.material.phase.Phase
+import org.scalaprops.Bean
 
 /**
  * A phase diagram that uses a known triple point and curve slope constants to map out a phase diagram.
@@ -28,21 +32,24 @@ import scalaquantity.Units._
  * +    temperature ->
  *
  */
-class TriplePointPhaseDiagram(solid: Phase,
-                              liquid: Phase,
-                              gaseous: Phase,
-                              triplePoint: (Pressure, Temperature),
-                              solidGasPoint: (Pressure, Temperature),
-                              solidLiquidPoint: (Pressure, Temperature),
-                              liquidGasPoint: (Pressure, Temperature)) extends PhaseDiagram {
+class TriplePointPhaseDiagram() extends PhaseDiagram with Bean {
 
-  val solidGasAngle    = math.atan2(solidGasPoint._1    - triplePoint._1, solidGasPoint._2    - triplePoint._2)
-  val solidLiquidAngle = math.atan2(solidLiquidPoint._1 - triplePoint._1, solidLiquidPoint._2 - triplePoint._2)
-  val liquidGasAngle   = math.atan2(liquidGasPoint._1   - triplePoint._1, liquidGasPoint._2   - triplePoint._2)
+  val solid = p('solid, new Phase())
+  val liquid = p('liquid, new Phase())
+  val gaseous = p('gaseous, new Phase())
+
+  val triplePoint = p('triplePoint, new PhasePoint())
+  val solidGasPoint = p('solidGasPoint, new PhasePoint())
+  val solidLiquidPoint = p('solidLiquidPoint, new PhasePoint())
+  val liquidGasPoint = p('liquidGasPoint, new PhasePoint())
+
+  val solidGasAngle    = solidGasPoint().angleFrom(triplePoint())
+  val solidLiquidAngle = solidLiquidPoint().angleFrom(triplePoint())
+  val liquidGasAngle   = liquidGasPoint().angleFrom(triplePoint())
 
   def apply(temperature: Temperature, pressure: Pressure) {
-    val angle = math.atan2(pressure - triplePoint._1,
-                           temperature - triplePoint._2)
+    val angle = math.atan2(pressure - triplePoint().pressure(),
+                           temperature - triplePoint().temperature())
 
     if (angleBetween(angle, solidGasAngle, solidLiquidAngle)) solid
     else if (angleBetween(angle, solidLiquidAngle, liquidGasAngle)) liquid
