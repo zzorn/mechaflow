@@ -1,22 +1,21 @@
 package gizmoflow.cell
 
-import scalaquantity.Units._
 import gizmoflow.Port
 
 /**
  * Port in one cell that may be connected to a port in another cell.
  */
-class CellPort(val area: Area, val hydraulicDiameter: Length, val position: (m, m, m)) extends Port[CellPort] {
+class CellPort(val area: Double, val hydraulicDiameter: Double, val position: (Double, Double, Double)) extends Port[CellPort] {
 
-  var pressure: Pressure = 0 * Pa;
+  var pressure_Pa: Double = 0;
 
-  var inFlow: Volume/Time = 0*m3/s;
+  var inFlow_m3_per_s: Double = 0;
 
-  lazy val distanceToCenter: Length = {
-    val x: Double = position._1.value
-    val y: Double = position._2.value
-    val z: Double = position._3.value
-    math.sqrt(x*x + y*y + z*z) * m
+  lazy val distanceToCenter: Double = {
+    val x: Double = position._1
+    val y: Double = position._2
+    val z: Double = position._3
+    math.sqrt(x*x + y*y + z*z)
   }
 
 }

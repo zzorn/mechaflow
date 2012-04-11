@@ -1,10 +1,8 @@
 package gizmoflow.cell
 
-import scalaquantity.Units._
 import gizmoflow.PhysicsConstants._
 import gizmoflow.material.{Matter, Material}
 import gizmoflow.material.phase._
-import scalaquantity.Units
 
 // TODO: Simplify:
 // TODO: Separate cells for liquid and gas?
@@ -15,11 +13,11 @@ import scalaquantity.Units
 /**
  * A fixed volume that contains some matter.
  */
-class Cell(val radius: Length, val length: Length) {
+class Cell(val radius: Double, val length: Double) {
 
-  lazy val volume: Volume = math.Pi * radius * radius * length
-  private lazy val radius4: m~m~m~m = radius * radius * radius * radius
-  private lazy val diameter3: m~m~m = 2*radius * 2*radius * 2*radius
+  lazy val volume: Double = math.Pi * radius * radius * length
+  private lazy val radius4: Double = radius * radius * radius * radius
+  private lazy val diameter3: Double = 2*radius * 2*radius * 2*radius
 
   var cellPorts: List[CellPort] = Nil
 
@@ -29,44 +27,44 @@ class Cell(val radius: Length, val length: Length) {
   private val startTurbulentReynolds = 4000.0
 
   private var matters: Map[Material, Matter] = Map()
-  private var _pressure: Pressure = 0
+  private var _pressure: Double = 0
 
   private val Pi2 = math.Pi * math.Pi
 
   def pressure = _pressure
 
-  def simulateTick(duration: Time) {
+  def simulateTick(duration: Double) {
     updatePressure(duration);
 
     // TODO: Calculate pressure at each port
   }
   
-  def simulateTock(duration: Time) {
+  def simulateTock(duration: Double) {
     // TODO: Calculate flow using Bernoullis principle
 
 
   }
   
   
-  def add(material: Material, amount: Mass, temperature: Temperature) {
+  def add(material: Material, amount: Double, temperature: Double) {
 
   }
 
-  def remove(material: Material, amount: Mass, temperature: Temperature) {
+  def remove(material: Material, amount: Double, temperature: Double) {
 
   }
 
   /** Does heat exchange between contained materials */
-  def doInternalHeatExchange(duration: Time) {
+  def doInternalHeatExchange(duration: Double) {
 
   }
 
-  def averageTemperature: Temperature = {
+  def averageTemperature: Double = {
 
   }
 
   /** Does heat exchange from external surfaces */
-  def doExternalHeatExchange(duration: Time, externalContactSurfaces: List[(Area, Temperature)]) {
+  def doExternalHeatExchange(duration: Double, externalContactSurfaces: List[(Area, Temperature)]) {
 
   }
 
@@ -109,7 +107,7 @@ class Cell(val radius: Length, val length: Length) {
 
   }
 
-  def calculateInterpolatedFlow(port: CellPort, matter: Matter, reynolds: Double): m3/s = {
+  def calculateInterpolatedFlow(port: CellPort, matter: Matter, reynolds: Double): Double = {
     // Just do a simple interpolation, actual behaviour is probably chaotic.
     val laminar = calculateLaminarFlowToCenter(port, matter)
     val turbulent = calculateTurbulentFlowToCenter(port, matter)
@@ -123,7 +121,7 @@ class Cell(val radius: Length, val length: Length) {
    * Calculates laminar flow from a cell port to the center, using the Hagen-Poiseuille equation
    * ( https://secure.wikimedia.org/wikipedia/en/wiki/Hagen-Poiseuille_flow ).
    */
-  private def calculateLaminarFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+  private def calculateLaminarFlowToCenter(port: CellPort, matter: Matter): Double = {
     // TODO: Include weight of matter into pressure
     val pressureDelta = port.pressure - pressure;
     (math.Pi * radius4 * pressureDelta)  /
@@ -134,14 +132,15 @@ class Cell(val radius: Length, val length: Length) {
    * Calculates turbulent flow from a cell port to the center, using the Darcy-Weisbach equation
    * ( https://secure.wikimedia.org/wikipedia/en/wiki/Darcy%E2%80%93Weisbach_equation ).
    */
-  private def calculateTurbulentFlowToCenter(port: CellPort, matter: Matter): m3/s = {
+  private def calculateTurbulentFlowToCenter(port: CellPort, matter: Matter): Double = {
     // TODO: Include weight of matter into pressure
     // TODO: Use matter volume to calculate diameter
     val pressureDelta = port.pressure - pressure;
+    /*
     val density =  // TODO: For gases, depends on volume
     val flowRate2 = (Pi2 * pressureDelta * diameter3) /
                     (8 * f * port.distanceToCenter *  )
-
+*/
 
   }
 

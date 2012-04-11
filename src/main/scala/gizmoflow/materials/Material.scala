@@ -7,7 +7,7 @@ import scalaquantity.Units._
  */
 case class Material(name: Symbol,
                     density: Density,
-                    heatCapacity: HeatCapacity,
+                    heatCapacity: HeatCapacity
         ) {
   
 }

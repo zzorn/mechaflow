@@ -1,10 +1,10 @@
-Gizmoflow
+Fluidflow
 =========
 
 About
 -----
 
-Library for simulating flow of items, solid matter, fluids, energy, and information between connected nodes / processing units.
+Library for simulating flow of fluids and energy between connected nodes / processing units.
 
 Geared towards advanced game simulation, and maybe simple physical modelling.
 
