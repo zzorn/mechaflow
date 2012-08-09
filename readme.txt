@@ -1,12 +1,14 @@
-Fluidflow
+MechaFlow
 =========
 
 About
 -----
 
-Library for simulating flow of fluids and energy between connected nodes / processing units.
+Library for simulating flow of matter and energy between connected nodes / processing units.
 
-Geared towards advanced game simulation, and maybe simple physical modelling.
+Inspired by multi-domain physical modelling languages such as Modelica ( http://www.modelica.org ).
+
+Geared towards advanced game simulation and simple physical modelling.
 
 
 Status:    Early development, not yet generally usable.

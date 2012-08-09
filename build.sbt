@@ -1,5 +1,5 @@
 
-name := "fluidflow"
+name := "mechaflow"
 
 version := "0.1"
 
