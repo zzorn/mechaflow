@@ -2,7 +2,6 @@ package org.mechaflow
 
 import org.scalatest.FunSuite
 import primitives._
-import primitives.ParsedEquation
 import primitives.Real
 
 /**
@@ -14,26 +13,41 @@ class ExampleTest extends FunSuite {
 
     // Resistor example
 
-    val pin = new Model('Pin)
-    pin.addModifier('connector)
-    pin.addParameter('voltage, Real(0))
-    pin.addParameter('current, Real(0), List('flow))
+    val pin = new Component('Pin, "Electric pin", connector = true) {
+      val voltage = addVar(Var('voltage, Real(0)))
+      val current = addVar(Var('current, Real(0), flow = true))
+    }
 
-    val twoPinComponent = new Model('twoPinComponent)
-    twoPinComponent.addParameter('p, ModelValue(pin))
-    twoPinComponent.addParameter('n, ModelValue(pin))
-    twoPinComponent.addVariable('voltage, Real(0))
-    twoPinComponent.addEquation(ParsedEquation("voltage = p.voltage - n.voltage"))
-    twoPinComponent.addEquation(ParsedEquation("p.current + n.current = 0"))
-    twoPinComponent.addEquation(ParsedEquation("current = p.current"))
+    val twoPinComponent = new Component('twoPinComponent, "Base class for two pin components") {
+      val p = addVar(Var('p, pin.newInstance()))
+      val n = addVar(Var('n, pin.newInstance()))
+      val voltage = addVar(Var('voltage, Real(0)))
+      addEq(ParsedEquation("voltage = p.voltage - n.voltage"))
+      addEq(ParsedEquation("p.current + n.current = 0"))
+      addEq(ParsedEquation("current = p.current"))
+    }
 
-    val resistor = new Model('Resistor)
-    resistor.addParent(twoPinComponent)
-    twoPinComponent.addParameter('resistance, Real(200))
-    resistor.addEquation(ParsedEquation("current = voltage / resistance"))
+    val resistor = new Component('Resistor, parents = List(twoPinComponent)) {
+      val resistance = addVar(Var('resistance, Real(200), parameter = true))
+      addEq(ParsedEquation("current = voltage / resistance"))
+    }
 
 
+    val voltageSource = new Component('VoltageSource, "A voltage source with fixed voltage", List(twoPinComponent)) {
+      val volt = addVar(Var('volt, Real(5), parameter = true))
+      addEq(ParsedEquation("voltage = volt"))
+    }
 
+    val simpleCircuit = new Component('SimpleCircuit)
+    simpleCircuit.addVar(Var('V1, voltageSource.newInstance(Map('volt -> Real(7)))))
+    simpleCircuit.addVar(Var('R1, resistor.newInstance(Map('resistance -> Real(400)))))
+    simpleCircuit.addVar(Var('R2, resistor.newInstance()))
+    simpleCircuit.connect(Path(List('v1, 'p)), Path(List('r1, 'n)))
+    simpleCircuit.connect(Path(List('r1, 'p)), Path(List('r2, 'n)))
+    simpleCircuit.connect(Path(List('r2, 'p)), Path(List('v1, 'n)))
+
+
+    print(simpleCircuit)
 
   }
 

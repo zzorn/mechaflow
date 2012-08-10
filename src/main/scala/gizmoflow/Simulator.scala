@@ -1,8 +1,0 @@
-package gizmoflow
-
-/**
- * 
- */
-class Simulator {
-  
-}

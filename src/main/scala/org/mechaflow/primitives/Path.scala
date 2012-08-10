@@ -3,5 +3,6 @@ package org.mechaflow.primitives
 /**
  *
  */
-trait Equation {
+case class Path(names: List[Symbol]) {
+
 }
