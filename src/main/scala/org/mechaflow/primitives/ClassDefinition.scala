@@ -24,10 +24,10 @@ case class ClassDefinition(id: Symbol,
     }
     builder append " {\n"
 
-    prettyList(imports,    "\n" + ci, builder, ci, ci, "\n")
-    prettyList(extensions, "\n" + ci, builder, ci, ci, "\n")
-    prettyList(elements,   "\n" + ci, builder, ci, ci, "\n")
-    prettyList(equations,  "\n" + ei, builder, ei, ci+"equations\n"+ei, "\n")
+    prettyList(imports,    ";\n" + ci, builder, ci, ci, ";\n")
+    prettyList(extensions, ";\n" + ci, builder, ci, ci, ";\n")
+    prettyList(elements,   ";\n" + ci, builder, ci, ci, ";\n")
+    prettyList(equations,  ";\n" + ei, builder, ei, ci+"equations\n"+ei, ";\n")
 
     builder append indent append "}\n"
   }

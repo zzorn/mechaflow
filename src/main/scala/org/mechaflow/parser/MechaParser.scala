@@ -71,15 +71,15 @@ class MechaParser() extends LanguageParser[Module] {
   }
 
   // Imports
-  private lazy val imports:  PackratParser[List[Import]] = rep(importParser)
+  private lazy val imports:  PackratParser[List[Import]] = rep(importParser <~ opt(";"))
   private lazy val importParser:  PackratParser[Import] = IMPORT ~> pathParser("import statement") ^^ {case p => Import(p)}
 
   // Extend clauses
-  private lazy val extensions:  PackratParser[List[Extends]] = rep(extendsParser)
+  private lazy val extensions:  PackratParser[List[Extends]] = rep(extendsParser <~ opt(";"))
   private lazy val extendsParser:  PackratParser[Extends] = EXTENDS ~> pathParser("parent class") ^^ {case p => Extends(p)}
 
   // Elements
-  private lazy val elements:  PackratParser[List[Element]] = rep(elementParser)
+  private lazy val elements:  PackratParser[List[Element]] = rep(elementParser <~ opt(";"))
   private lazy val elementParser:  PackratParser[Element] = {
     opt(FLOW) ~
     opt(INPUT | OUTPUT) ~
@@ -103,11 +103,13 @@ class MechaParser() extends LanguageParser[Module] {
   }
 
   // Equations
-  private lazy val equations:  PackratParser[List[Equation]] = opt(EQUATIONS ~> rep(equationParser)) ^^ {case es => es.getOrElse(Nil)}
+  private lazy val equations:  PackratParser[List[Equation]] = {
+    opt(EQUATIONS ~> rep(equationParser)) ^^ {case es => es.getOrElse(Nil)}
+  }
   private lazy val equationParser:  PackratParser[Equation] = {
-    CONNECT ~> "(" ~> componentReference ~ "," ~ componentReference <~ ")" ^^
+    CONNECT ~> "(" ~> componentReference ~ "," ~ componentReference <~ ")" <~ opt(";") ^^
       {case a ~ _c ~ b => Connection(a, b)} |
-    simpleExpressionParser ~ "=" ~ expressionParser ^^
+    simpleExpressionParser ~ "=" ~ expressionParser <~ opt(";") ^^
       {case left ~ _eq ~ right => SimpleEquation(left, right) }
   }
 

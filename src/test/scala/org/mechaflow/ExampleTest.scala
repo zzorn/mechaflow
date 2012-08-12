@@ -18,24 +18,24 @@ class ExampleTest extends FunSuite {
         |package electric.basic
         |
         |class Pin "Electrical pin" {
-        |  var Real volt = 0
-        |  flow var Real current = 0
+        |  var Real volt = 0;
+        |  flow var Real current = 0;
         |}
         |
         |class TwoPinComponent {
-        |  var Pin p
-        |  var Pin n
+        |  var Pin p "Positive pin"
+        |  var Pin n "Negative pin"
         |  var Real volt
         |  var Real current
         |  equations
         |    volt = p.volt - n.volt
-        |    p.current + n.current = 0
-        |    current = p.current
+        |    p.current + n.current = 0;
+        |    current = p.current;
         |}
         |
         |class Resistor "Ideal resistor" {
         |  extends TwoPinComponent
-        |  param Real resistance = 200
+        |  param Real resistance = 200 "Resistance in ohms"
         |  equations
         |    current = voltage / resistance
         |}

@@ -23,15 +23,22 @@ case class Element(id: Symbol,
     else if (param) builder append "param "
     else builder append "var "
 
-    builder append id.name
-    builder append " "
+    // Type
     typePath.prettyPrint(builder, indent)
+
+    // Identifier
     builder append " "
+    builder append id.name
+
+    // Initial value
     if (initialValue.isDefined) {
+      builder append " "
       initialValue.get.prettyPrint(builder, indent)
     }
-    builder append " "
+
+    // Doc string
     if (doc.isDefined) {
+      builder append " "
       builder append "\""
       builder append doc.get
       builder append "\""
