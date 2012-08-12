@@ -29,7 +29,7 @@ class MechaParser() extends LanguageParser[Module] {
   val PARAMETER = registerKeyword(ParamKeyword)
   val INPUT = registerKeyword(InputKeyword)
   val OUTPUT = registerKeyword(OutputKeyword)
-  val EQUATION = registerKeyword("equat")
+  val EQUATIONS = registerKeyword("equations")
   val CONNECT = registerKeyword("connect")
 
   val OR = registerKeyword("or")
@@ -103,12 +103,12 @@ class MechaParser() extends LanguageParser[Module] {
   }
 
   // Equations
-  private lazy val equations:  PackratParser[List[Equation]] = rep(equationParser)
+  private lazy val equations:  PackratParser[List[Equation]] = opt(EQUATIONS ~> rep(equationParser)) ^^ {case es => es.getOrElse(Nil)}
   private lazy val equationParser:  PackratParser[Equation] = {
-    EQUATION ~> simpleExpressionParser ~ "=" ~ expressionParser ^^
-      {case left ~ _eq ~ right => SimpleEquation(left, right) } |
     CONNECT ~> "(" ~> componentReference ~ "," ~ componentReference <~ ")" ^^
-      {case a ~ _c ~ b => Connection(a, b)}
+      {case a ~ _c ~ b => Connection(a, b)} |
+    simpleExpressionParser ~ "=" ~ expressionParser ^^
+      {case left ~ _eq ~ right => SimpleEquation(left, right) }
   }
 
   // Expressions
@@ -233,7 +233,7 @@ class MechaParser() extends LanguageParser[Module] {
   }
 
   private lazy val namedArgument: PackratParser[NamedArgument] = {
-    identifier("argument name") ~ expressionParser ^^{case n~v => NamedArgument(n, v)}
+    identifier("argument name") ~ "=" ~ expressionParser ^^{case n ~ _eq ~ v => NamedArgument(n, v)}
   }
 
   private lazy val unnamedArgument: PackratParser[UnnamedArgument] = {

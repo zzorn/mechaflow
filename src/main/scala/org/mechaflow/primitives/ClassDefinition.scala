@@ -12,6 +12,7 @@ case class ClassDefinition(id: Symbol,
 
   def prettyPrint(builder: StringBuilder, indent: String) {
     val ci = indent + "  "
+    val ei = indent + "    "
 
     builder append indent
     builder append "class "
@@ -21,13 +22,13 @@ case class ClassDefinition(id: Symbol,
       builder append doc.get
       builder append "\""
     }
-    builder append " {\n" append ci
+    builder append " {\n"
 
-    prettyList(imports, "\n" + ci, builder, ci, addSeparatorAfterLast = true)
-    prettyList(extensions, "\n" + ci, builder, ci, addSeparatorAfterLast = true)
-    prettyList(elements, "\n" + ci, builder, ci, addSeparatorAfterLast = true)
-    prettyList(equations, "\n" + ci, builder, ci, addSeparatorAfterLast = true)
+    prettyList(imports,    "\n" + ci, builder, ci, ci, "\n")
+    prettyList(extensions, "\n" + ci, builder, ci, ci, "\n")
+    prettyList(elements,   "\n" + ci, builder, ci, ci, "\n")
+    prettyList(equations,  "\n" + ei, builder, ei, ci+"equations\n"+ei, "\n")
 
-    builder append "\n" append indent append "}\n"
+    builder append indent append "}\n"
   }
 }

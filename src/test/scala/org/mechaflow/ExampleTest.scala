@@ -27,15 +27,17 @@ class ExampleTest extends FunSuite {
         |  var Pin n
         |  var Real volt
         |  var Real current
-        |  equat volt = p.volt - n.volt
-        |  equat p.current + n.current = 0
-        |  equat current = p.current
+        |  equations
+        |    volt = p.volt - n.volt
+        |    p.current + n.current = 0
+        |    current = p.current
         |}
         |
         |class Resistor "Ideal resistor" {
         |  extends TwoPinComponent
         |  param Real resistance = 200
-        |  equat current = voltage / resistance
+        |  equations
+        |    current = voltage / resistance
         |}
         |
       """.stripMargin)

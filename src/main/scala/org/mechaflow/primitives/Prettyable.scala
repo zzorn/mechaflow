@@ -9,7 +9,9 @@ trait Prettyable {
 
   def prettyPrint(builder: StringBuilder, indent: String = "")
 
-  def prettyList(l: Seq[_ <: Prettyable], separator: String, builder: StringBuilder, indent: String, addSeparatorAfterLast: Boolean = false) {
+  def prettyList(l: Seq[_ <: Prettyable], separator: String, builder: StringBuilder, indent: String, prefixSeparator: String = "", trailingSeparator: String = "") {
+    if (!l.isEmpty) builder append prefixSeparator
+
     var first = true
     l foreach {e =>
       if (first) first = false
@@ -20,7 +22,7 @@ trait Prettyable {
       e.prettyPrint(builder, indent)
     }
 
-    if (!l.isEmpty && addSeparatorAfterLast) builder append separator
+    if (!l.isEmpty) builder append trailingSeparator
   }
 
   def prettySymbols(l: Seq[Symbol], separator: String, builder: StringBuilder, indent: String) {
