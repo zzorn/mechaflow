@@ -40,6 +40,21 @@ class ExampleTest extends FunSuite {
         |    current = voltage / resistance
         |}
         |
+        |class VoltageSource "A voltage source with fixed voltage" {
+        |  extends TwoPinComponent
+        |  param Real volt = 5
+        |}
+        |
+        |class SimpleCircuit "Test circuit" {
+        |  var VoltageSource v1
+        |  var Resistor r1
+        |  var Resistor r2 // (resistance = 400)  TODO: Allow overriding elements in type class.
+        |  equations
+        |    connect(v1.p, r1.n)
+        |    connect(r1.p, r2.n)
+        |    connect(r2.p, v1.n)
+        |}
+        |
       """.stripMargin)
 
     println(result)

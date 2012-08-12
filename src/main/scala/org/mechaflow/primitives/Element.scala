@@ -14,11 +14,14 @@ case class Element(id: Symbol,
                    param: Boolean = false) extends Prettyable {
 
   def prettyPrint(builder: StringBuilder, indent: String) {
+
+    // Modifiers
     if (flow) builder append "flow "
     if (in) builder append "in "
     if (out) builder append "output "
     if (in) builder append "input "
 
+    // Category of element
     if (const) builder append "const "
     else if (param) builder append "param "
     else builder append "var "
