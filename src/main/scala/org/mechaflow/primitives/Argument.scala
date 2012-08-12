@@ -3,6 +3,6 @@ package org.mechaflow.primitives
 /**
  * Function call argument
  */
-trait Argument {
+trait Argument extends Prettyable {
 
 }

@@ -3,6 +3,6 @@ package org.mechaflow.primitives
 /**
  *
  */
-class Expr {
+trait Expr extends Prettyable {
 
 }

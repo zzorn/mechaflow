@@ -3,10 +3,9 @@ package org.mechaflow.primitives
 /**
  *
  */
-case class NamedArgument(name: Symbol, expr: Expr) extends Argument {
+case class NegExpr(expr: Expr) extends Expr {
   def prettyPrint(builder: StringBuilder, indent: String) {
-    builder append name.name
-    builder append " = "
+    builder append "-"
     expr.prettyPrint(builder, indent)
   }
 }

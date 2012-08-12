@@ -3,11 +3,10 @@ package org.mechaflow.primitives
 /**
  *
  */
-case class Import(path: Path) extends Prettyable {
+case class Extends(path: Path) extends Prettyable {
 
   def prettyPrint(builder: StringBuilder, indent: String) {
-    builder append "import "
+    builder append "extends "
     path.prettyPrint(builder, indent)
   }
-
 }

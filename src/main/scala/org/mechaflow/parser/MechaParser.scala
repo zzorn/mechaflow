@@ -20,8 +20,8 @@ class MechaParser() extends LanguageParser[Module] {
 
   val InputKeyword = "input"
   val OutputKeyword = "output"
-  val ConstKeyword = "constant"
-  val ParamKeyword = "parameter"
+  val ConstKeyword = "const"
+  val ParamKeyword = "param"
 
   val VAR = registerKeyword("var")
   val FLOW = registerKeyword("flow")
@@ -29,7 +29,7 @@ class MechaParser() extends LanguageParser[Module] {
   val PARAMETER = registerKeyword(ParamKeyword)
   val INPUT = registerKeyword(InputKeyword)
   val OUTPUT = registerKeyword(OutputKeyword)
-  val EQUATION = registerKeyword("equation")
+  val EQUATION = registerKeyword("equat")
   val CONNECT = registerKeyword("connect")
 
   val OR = registerKeyword("or")
@@ -71,12 +71,12 @@ class MechaParser() extends LanguageParser[Module] {
   }
 
   // Imports
-  private lazy val imports:  PackratParser[List[Path]] = rep(importParser)
-  private lazy val importParser:  PackratParser[Path] = IMPORT ~> pathParser("import statement")
+  private lazy val imports:  PackratParser[List[Import]] = rep(importParser)
+  private lazy val importParser:  PackratParser[Import] = IMPORT ~> pathParser("import statement") ^^ {case p => Import(p)}
 
   // Extend clauses
-  private lazy val extensions:  PackratParser[List[Path]] = rep(extendsParser)
-  private lazy val extendsParser:  PackratParser[Path] = EXTENDS ~> pathParser("parent class")
+  private lazy val extensions:  PackratParser[List[Extends]] = rep(extendsParser)
+  private lazy val extendsParser:  PackratParser[Extends] = EXTENDS ~> pathParser("parent class") ^^ {case p => Extends(p)}
 
   // Elements
   private lazy val elements:  PackratParser[List[Element]] = rep(elementParser)
@@ -152,7 +152,12 @@ class MechaParser() extends LanguageParser[Module] {
 
   // Terms
   private lazy val arithmeticExpression:  PackratParser[Expr] = {
-    opt(addOp) ~ term ~ rep(termElement) ^^ {case p~t~r => TermExpr(TermElement(p.getOrElse('+), t) :: r)}
+    "-" ~> posExpr ^^ {case e => NegExpr(e)} |
+    posExpr
+  }
+
+  private lazy val posExpr:  PackratParser[Expr] = {
+    term ~ rep(termElement) ^^ {case f~r => TermExpr(f, r)}
   }
 
   private lazy val termElement: PackratParser[TermElement] = {

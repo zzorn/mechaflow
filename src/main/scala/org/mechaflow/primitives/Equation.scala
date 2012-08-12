@@ -3,6 +3,6 @@ package org.mechaflow.primitives
 /**
  *
  */
-trait Equation {
+trait Equation extends Prettyable {
 
 }
