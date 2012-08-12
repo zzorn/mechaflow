@@ -27,9 +27,9 @@ abstract class LanguageParser[T] extends StandardTokenParsers with PackratParser
   /**
    * Registers the specified reserved language keyword, and returns it.
    */
-  protected def registerKeyword(keyword: String): String = {
-    lexical.reserved.add(keyword)
-    keyword
+  protected def registerKeyword(s: String): PackratParser[String] = {
+    lexical.reserved.add(s)
+    keyword(s)
   }
 
   /**

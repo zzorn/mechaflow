@@ -1,6 +1,7 @@
 package org.mechaflow
 
 import org.scalatest.FunSuite
+import parser.MechaParser
 import primitives._
 import primitives.Real
 
@@ -8,6 +9,40 @@ import primitives.Real
  *
  */
 class ExampleTest extends FunSuite {
+
+  test("Parse sources") {
+    val parser = new MechaParser()
+
+    val result = parser.parseString(
+      """
+        |package electric.basic
+        |
+        |class Pin "Electrical pin" {
+        |  var Real volt = 0
+        |  flow var Real current = 0
+        |}
+        |
+        |class TwoPinComponent {
+        |  var Pin p
+        |  var Pin n
+        |  var Real volt
+        |  var Real current
+        |  equation volt = p.volt - n.volt
+        |  equation p.current + n.current = 0
+        |  equation current = p.current
+        |}
+        |
+        |class Resistor "Ideal resistor" {
+        |  extends TwoPinComponent
+        |  parameter Real resistance = 200
+        |  equation current = voltage / resistance
+        |}
+        |
+      """.stripMargin)
+
+    println(result)
+    assert(result != null)
+  }
 
   test("Designing API") {
 
@@ -22,6 +57,7 @@ class ExampleTest extends FunSuite {
       val p = addVar(Var('p, pin.newInstance()))
       val n = addVar(Var('n, pin.newInstance()))
       val voltage = addVar(Var('voltage, Real(0)))
+      addVar(Var('current, Real(0)))
       addEq(ParsedEquation("voltage = p.voltage - n.voltage"))
       addEq(ParsedEquation("p.current + n.current = 0"))
       addEq(ParsedEquation("current = p.current"))

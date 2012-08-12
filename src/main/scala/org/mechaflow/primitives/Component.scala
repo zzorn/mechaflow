@@ -49,7 +49,7 @@ case class Component(name: Symbol,
    * Connects two specified components, that should be connectors.
    */
   def connect(from: Path, to: Path) {
-    addEq(Connection(from, to))
+    //addEq(Connection(from, to))
   }
 
   def createCopy: Value = copy()

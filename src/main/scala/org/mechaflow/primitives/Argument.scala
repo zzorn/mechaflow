@@ -1,8 +1,8 @@
 package org.mechaflow.primitives
 
 /**
- *
+ * Function call argument
  */
-case class Path(path: List[Symbol]) {
+trait Argument {
 
 }

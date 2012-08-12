@@ -1,10 +1,11 @@
 package org.mechaflow.primitives
 
+
 /**
  * Represents a connection between two connectable components of matching types.
  * Modeled as an equality (or zero sum for flow variables) between the variables in the connectors.
  */
-case class Connection(fromComponent: Path, toComponent: Path) extends Equation {
+case class Connection(fromComponent: Ref, toComponent: Ref) extends Equation {
 
   /* Some checking logic for when it is instantiated..
     if (!from.isInstanceOf[Component]) throw new Error("Must connect from a component, can not connect to a value of type " + from.getClass)
