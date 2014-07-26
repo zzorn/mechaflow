@@ -4,15 +4,15 @@ MechaFlow
 About
 -----
 
-Library for simulating flow of matter and energy between connected nodes / processing units.
+Library for simulating flow of matter, energy, and information between connected nodes / processing units.
 
-Inspired by multi-domain physical modelling languages such as Modelica ( http://www.modelica.org ).
+Partly inspired by multi-domain physical modelling languages such as Modelica ( http://www.modelica.org ).
 
-Geared towards advanced game simulation and simple physical modelling.
+Geared towards game simulation.
 
 
 Status:    Early development, not yet generally usable.
-Language:  Scala
+Language:  Java
 License:   GPL 3
 Developer: zzorn at iki.fi
 
