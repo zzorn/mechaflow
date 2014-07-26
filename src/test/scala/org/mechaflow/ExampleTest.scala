@@ -1,7 +1,7 @@
 package org.mechaflow
 
 import org.scalatest.FunSuite
-import parser.MechaParser
+import parser.{Scope, MechaAnalyser, MechaParser}
 import primitives._
 import primitives.Real
 
@@ -10,55 +10,58 @@ import primitives.Real
  */
 class ExampleTest extends FunSuite {
 
+  val testProgram =
+        """
+          |package electric.basic
+          |
+          |class Pin "Electrical pin" {
+          |  var Real volt = 0;
+          |  flow var Real current = 0;
+          |}
+          |
+          |class TwoPinComponent {
+          |  var Pin p "Positive pin"
+          |  var Pin n "Negative pin"
+          |  var Real volt
+          |  var Real current
+          |  equations
+          |    volt = p.volt - n.volt
+          |    p.current + n.current = 0;
+          |    current = p.current;
+          |}
+          |
+          |class Resistor "Ideal resistor" {
+          |  extends TwoPinComponent
+          |  param Real resistance = 200 "Resistance in ohms"
+          |  equations
+          |    current = voltage / resistance
+          |}
+          |
+          |class VoltageSource "A voltage source with fixed voltage" {
+          |  extends TwoPinComponent
+          |  param Real volt = 5
+          |}
+          |
+          |class SimpleCircuit "Test circuit" {
+          |  var VoltageSource v1
+          |  var Resistor r1
+          |  var Resistor r2 // (resistance = 400)  TODO: Allow overriding elements in type class.
+          |  equations
+          |    connect(v1.p, r1.n)
+          |    connect(r1.p, r2.n)
+          |    connect(r2.p, v1.n)
+          |}
+          |
+        """.stripMargin
+
   test("Parse sources") {
     val parser = new MechaParser()
 
-    val result = parser.parseString(
-      """
-        |package electric.basic
-        |
-        |class Pin "Electrical pin" {
-        |  var Real volt = 0;
-        |  flow var Real current = 0;
-        |}
-        |
-        |class TwoPinComponent {
-        |  var Pin p "Positive pin"
-        |  var Pin n "Negative pin"
-        |  var Real volt
-        |  var Real current
-        |  equations
-        |    volt = p.volt - n.volt
-        |    p.current + n.current = 0;
-        |    current = p.current;
-        |}
-        |
-        |class Resistor "Ideal resistor" {
-        |  extends TwoPinComponent
-        |  param Real resistance = 200 "Resistance in ohms"
-        |  equations
-        |    current = voltage / resistance
-        |}
-        |
-        |class VoltageSource "A voltage source with fixed voltage" {
-        |  extends TwoPinComponent
-        |  param Real volt = 5
-        |}
-        |
-        |class SimpleCircuit "Test circuit" {
-        |  var VoltageSource v1
-        |  var Resistor r1
-        |  var Resistor r2 // (resistance = 400)  TODO: Allow overriding elements in type class.
-        |  equations
-        |    connect(v1.p, r1.n)
-        |    connect(r1.p, r2.n)
-        |    connect(r2.p, v1.n)
-        |}
-        |
-      """.stripMargin)
+    val result = parser.parseString(testProgram)
 
     println(result)
     assert(result != null)
+
   }
 
   test("Designing API") {
@@ -103,5 +106,22 @@ class ExampleTest extends FunSuite {
     print(simpleCircuit)
 
   }
+
+
+  test("Test analyser") {
+    val analyzer = new MechaAnalyser()
+    val scope = analyzer.loadString(testProgram)
+
+    assert(scope.getNode(List('Resistor, 'resistance)) != None)
+    val r1: Option[Node] = scope.getNode(List('SimpleCircuit, 'r1))
+    val r1scope: Option[Scope] = scope.getScope(List('SimpleCircuit))
+    assert(r1scope != None)
+    assert(r1scope.get.getNode(List('r2)) != None)
+    assert(r1scope.get.getNode(List('VoltageSource, 'volt)) != None)
+    assert(r1scope.get.getNode(List('resistance)) === None)
+    assert(r1scope.get.getNode(List('p)) != None)
+
+  }
+
 
 }

@@ -1,5 +1,7 @@
 package org.mechaflow.primitives
 
+import org.mechaflow.parser.Scope
+
 /**
  *
  */
@@ -8,7 +10,25 @@ case class ClassDefinition(id: Symbol,
                            imports: List[Import],
                            extensions: List[Extends],
                            elements: List[Element],
-                           equations: List[Equation])  extends Prettyable {
+                           equations: List[Equation])  extends Def with Prettyable {
+
+  def buildScope(scope: Scope) {
+    // TODO: Handle imports
+
+    // Add elements to scope
+    elements foreach {e =>
+      scope.addNode(e.id, e)
+    }
+  }
+
+
+  elements foreach {_.parent = Some(this)}
+
+  var parent: Option[Def] = None
+
+  lazy val elementsByName: Map[Symbol, Element] = (elements map(e => e.id -> e)).toMap
+
+  protected def getLocalElement(name: Symbol) = elementsByName.get(name)
 
   def prettyPrint(builder: StringBuilder, indent: String) {
     val ci = indent + "  "

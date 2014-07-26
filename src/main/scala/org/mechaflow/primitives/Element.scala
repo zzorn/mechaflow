@@ -11,7 +11,12 @@ case class Element(id: Symbol,
                    in: Boolean = false,
                    out: Boolean = false,
                    const: Boolean = false,
-                   param: Boolean = false) extends Prettyable {
+                   param: Boolean = false) extends Def with Prettyable {
+
+
+  var parent: Option[Def] = None
+
+  protected def getLocalElement(name: Symbol) = None
 
   def prettyPrint(builder: StringBuilder, indent: String) {
 
