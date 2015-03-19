@@ -8,7 +8,8 @@ public enum ConnectionCategory {
     POWER,
     ENTITY,
     SIGNAL,
-    DATAGRAM
+    DATAGRAM,
+    FLUID
 
 
 
