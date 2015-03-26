@@ -39,14 +39,14 @@
         <dependency>
             <groupId>org.flowutils</groupId>
             <artifactId>flowutils</artifactId>
-            <version>0.1.43</version>
+            <version>0.1.67</version>
         </dependency>
 
         <!-- Entity library -->
         <dependency>
             <groupId>org.entityflow</groupId>
             <artifactId>entityflow</artifactId>
-            <version>0.6.0</version>
+            <version>0.7.0</version>
         </dependency>
 
         <!-- Unit testing -->
@@ -54,6 +54,14 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- For visualization in examples -->
+        <dependency>
+            <groupId>org.uiflow</groupId>
+            <artifactId>uiflow-desktop</artifactId>
+            <version>0.3</version>
             <scope>test</scope>
         </dependency>
 

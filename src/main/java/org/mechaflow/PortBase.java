@@ -13,10 +13,11 @@ public abstract class PortBase implements Port {
     protected static final int DEFAULT_LARGE_SIZE_GAUGE = 0;
     protected static final int DEFAULT_MEDIUM_SIZE_GAUGE = -2;
     protected static final int DEFAULT_SMALL_SIZE_GAUGE = -4;
-
     private Port connectedPort;
+
     private Machine machine;
     private final String name;
+    private final String description;
     private final PortDirection direction;
     private int widthGauge;
     private int heightGauge;
@@ -32,6 +33,17 @@ public abstract class PortBase implements Port {
     }
 
     /**
+     * Creates a new port with a default width and height of size gauge 0 (1 meter).
+     *
+     * @param name user readable name/id of the port.
+     * @param description user readable english description of the port, or null if no description is provided.
+     * @param direction the direction of energy, matter or information transmission in this port.
+     */
+    protected PortBase(String name, String description, PortDirection direction) {
+        this(name, direction, description, DEFAULT_MEDIUM_SIZE_GAUGE, DEFAULT_MEDIUM_SIZE_GAUGE);
+    }
+
+    /**
      * Creates a new port.
      *
      * @param name user readable name/id of the port.
@@ -39,7 +51,7 @@ public abstract class PortBase implements Port {
      * @param sizeGauge width and height class of the port.  Size fits inside 2 ^ sizeGauge meters per side.
      */
     protected PortBase(String name, PortDirection direction, int sizeGauge) {
-        this(name, direction, sizeGauge, sizeGauge);
+        this(name, direction, null, sizeGauge, sizeGauge);
     }
 
     /**
@@ -51,10 +63,24 @@ public abstract class PortBase implements Port {
      * @param heightGauge height class of the port.  Size fits inside 2 ^ heightGauge meters.
      */
     protected PortBase(String name, PortDirection direction, int widthGauge, int heightGauge) {
+        this(name, direction, null, widthGauge, heightGauge);
+    }
+
+    /**
+     * Creates a new port.
+     *
+     * @param name user readable name/id of the port.
+     * @param description user readable english description of the port, or null if no description is provided.
+     * @param direction the direction of energy, matter or information transmission in this port.
+     * @param widthGauge width class of the port.  Size fits inside 2 ^ widthGauge meters.
+     * @param heightGauge height class of the port.  Size fits inside 2 ^ heightGauge meters.
+     */
+    protected PortBase(String name, PortDirection direction, String description, int widthGauge, int heightGauge) {
         Check.nonEmptyString(name, "name");
         notNull(direction, "direction");
 
         this.name = name;
+        this.description = description;
         this.direction = direction;
         this.widthGauge = widthGauge;
         this.heightGauge = heightGauge;
@@ -62,6 +88,10 @@ public abstract class PortBase implements Port {
 
     @Override public final String getName() {
         return name;
+    }
+
+    @Override public String getDescription() {
+        return description;
     }
 
     @Override public final PortDirection getDirection() {

@@ -51,7 +51,7 @@ public abstract class MachineBase implements Machine {
      * @param port port to add to the machine.
      * @return the added port, for assigning to public fields or similar.
      */
-    protected final Port addPort(Port port) {
+    protected final <P extends Port> P addPort(P port) {
         notNull(port, "port");
 
         // Lazy init ports list, as initialization order of it may be later than ports added in fields in descendant classes.

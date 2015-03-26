@@ -10,7 +10,7 @@ public interface Port {
 
     /*
 
-    TODO: Things like connector sizes or techs should be parametrizable for machines thou, so not something they should
+    TODO: Things like connector sizes or techs should be parametrizable for machines, so not something they should
           have to specify statically..
     TODO: So there should rather be factories for creating machine components based on specifications, and with methods to
           query the materials and knowledge, skills, and work required for building a certain parametrization.?
@@ -37,6 +37,8 @@ public interface Port {
      * @return user readable name/id of the port.
      */
     String getName();
+
+    String getDescription();
 
     /**
      * @return the direction of energy, matter or information transmission in this port.
@@ -92,16 +94,16 @@ public interface Port {
     boolean canConnect(Port otherPort);
 
     /**
-     * Calculates any states in the port, and does other logic checking, such as failure checks.
-     * @param time holds current simulation time and elapsed time since the last call to update.
-     */
-    void update(Time time);
-
-    /**
      * Propagate any states of output ports to connected input ports.
      * @param time holds current simulation time and elapsed time since the last call to propagate.
      */
     void propagate(Time time);
+
+    /**
+     * Calculates any states in the port, and does other logic checking, such as failure checks.
+     * @param time holds current simulation time and elapsed time since the last call to update.
+     */
+    void update(Time time);
 
     /**
      * @return the machine this port belongs to.
