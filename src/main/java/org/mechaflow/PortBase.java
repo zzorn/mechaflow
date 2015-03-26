@@ -10,37 +10,86 @@ import static org.flowutils.Check.notNull;
  */
 public abstract class PortBase implements Port {
 
+    protected static final int DEFAULT_LARGE_SIZE_GAUGE = 0;
+    protected static final int DEFAULT_MEDIUM_SIZE_GAUGE = -2;
+    protected static final int DEFAULT_SMALL_SIZE_GAUGE = -4;
+
     private Port connectedPort;
     private Machine machine;
     private final String name;
-    private final ConnectorType connectorType;
     private final PortDirection direction;
+    private int widthGauge;
+    private int heightGauge;
 
     /**
+     * Creates a new port with a default width and height of size gauge 0 (1 meter).
+     *
      * @param name user readable name/id of the port.
-     * @param connectorType type of connection that can be connected to this port.
      * @param direction the direction of energy, matter or information transmission in this port.
      */
-    protected PortBase(String name, ConnectorType connectorType, PortDirection direction) {
+    protected PortBase(String name, PortDirection direction) {
+        this(name, direction, DEFAULT_MEDIUM_SIZE_GAUGE);
+    }
+
+    /**
+     * Creates a new port.
+     *
+     * @param name user readable name/id of the port.
+     * @param direction the direction of energy, matter or information transmission in this port.
+     * @param sizeGauge width and height class of the port.  Size fits inside 2 ^ sizeGauge meters per side.
+     */
+    protected PortBase(String name, PortDirection direction, int sizeGauge) {
+        this(name, direction, sizeGauge, sizeGauge);
+    }
+
+    /**
+     * Creates a new port.
+     *
+     * @param name user readable name/id of the port.
+     * @param direction the direction of energy, matter or information transmission in this port.
+     * @param widthGauge width class of the port.  Size fits inside 2 ^ widthGauge meters.
+     * @param heightGauge height class of the port.  Size fits inside 2 ^ heightGauge meters.
+     */
+    protected PortBase(String name, PortDirection direction, int widthGauge, int heightGauge) {
         Check.nonEmptyString(name, "name");
-        notNull(connectorType, "connectionType");
         notNull(direction, "direction");
 
         this.name = name;
-        this.connectorType = connectorType;
         this.direction = direction;
+        this.widthGauge = widthGauge;
+        this.heightGauge = heightGauge;
     }
 
     @Override public final String getName() {
         return name;
     }
 
-    @Override public final ConnectorType getConnectorType() {
-        return connectorType;
-    }
-
     @Override public final PortDirection getDirection() {
         return direction;
+    }
+
+    public final int getWidthGauge() {
+        return widthGauge;
+    }
+
+    public final void setWidthGauge(int widthGauge) {
+        this.widthGauge = widthGauge;
+    }
+
+    public final int getHeightGauge() {
+        return heightGauge;
+    }
+
+    public final void setHeightGauge(int heightGauge) {
+        this.heightGauge = heightGauge;
+    }
+
+    @Override public final double getWidthMeters() {
+        return Math.pow(2.0, widthGauge);
+    }
+
+    @Override public final double getHeightMeters() {
+        return Math.pow(2.0, heightGauge);
     }
 
     @Override public final void init(Machine machine) {
@@ -98,11 +147,11 @@ public abstract class PortBase implements Port {
         return connectedPort != null;
     }
 
-    @Override public final boolean canConnect(Port otherPort) {
+    @Override public boolean canConnect(Port otherPort) {
         return otherPort != null &&
                otherPort != this &&
                direction.canConnect(otherPort.getDirection()) &&
-               (otherPort.getConnectorType() == connectorType || connectorType.equals(otherPort.getConnectorType()));
+               getClass().equals(otherPort.getClass());
     }
 
     /**

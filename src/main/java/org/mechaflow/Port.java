@@ -10,47 +10,26 @@ public interface Port {
 
     /*
 
-    TODO: Could as well have a port keep track of all of these, instead of creating a ConnectorType that wraps them?
     TODO: Things like connector sizes or techs should be parametrizable for machines thou, so not something they should
           have to specify statically..
     TODO: So there should rather be factories for creating machine components based on specifications, and with methods to
-          query the materials and knowledge, skills, and work required for building a certain parametrization.
+          query the materials and knowledge, skills, and work required for building a certain parametrization.?
+          */
 
-    Connection directions:
-    - Input
-    - Output
-    - Both
+/*
+    Performance parameters internal to the port.
+      - Depends on the precision and quality of construction, and the materials used (strength, solidity, elasticity? etc).
+      - Max torque & speed / volt & amp, pressure & flow,
+      - Max item size
+      - Max signal frequency / data size
 
-    Connection types:
-      Information
-        - Signal
-          (- boolean)
-          (- ranged (0.0 .. 1.0))
-          (- counting (integer))
-          - value (float)
-        - Datagram (assembly of datatypes (numbers, booleans, text, lists, maps, datagrams),
-                    following some specified datagram format (containing the names and types of the fields,
-                    possibly allowing multiple versions))
-      Power
-        - Rotary power
-        - Electric power
-        - Hydraulic power (may fit under the fluid category)
-        - Pneumatic power (may fit under the fluid category)
-        - Other?
-      Matter
-        - Entities (or heaps of entities)
-        - Loose matter(?) (in fixed volumes, one way)
-        - Fluid (two way with pressure)
-      Other?  E.g. mana/magic.
+      - Leakage of fluids (pore size?)
+      - Friction -> heat
+      - Fluid flow -> heat
+      - signal -> drop
+      - (items -> ejected?)
 
-    Connector sizes
-        2m ^ x, where x is an integer
 
-    Connector techs
-        - Wood, wrought iron, cast iron, machined steel, composites, etc..
-
-    Connector models
-        - Imperial standard, galactic standard, etc...
      */
 
 
@@ -60,14 +39,31 @@ public interface Port {
     String getName();
 
     /**
-     * @return the connection type this port has.
-     */
-    ConnectorType getConnectorType();
-
-    /**
      * @return the direction of energy, matter or information transmission in this port.
      */
     PortDirection getDirection();
+
+    /**
+     * @return width of the port, expressed as 2^getWidth() meters.
+     *         Ports of different sizes can be connected.
+     */
+    int getWidthGauge();
+
+    /**
+     * @return height of the port, expressed as 2^getHeight() meters.
+     *         Ports of different sizes can be connected.
+     */
+    int getHeightGauge();
+
+    /**
+     * @return width of the port, in meters.
+     */
+    double getWidthMeters();
+
+    /**
+     * @return height of the port, in meters.
+     */
+    double getHeightMeters();
 
     /**
      * Attempts to connect this port to the specified port.
@@ -94,6 +90,12 @@ public interface Port {
      * @return true if this port can be connected to the specified port.
      */
     boolean canConnect(Port otherPort);
+
+    /**
+     * Calculates any states in the port, and does other logic checking, such as failure checks.
+     * @param time holds current simulation time and elapsed time since the last call to update.
+     */
+    void update(Time time);
 
     /**
      * Propagate any states of output ports to connected input ports.
