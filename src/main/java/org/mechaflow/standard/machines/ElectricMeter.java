@@ -9,6 +9,7 @@ import org.mechaflow.standard.ports.SignalPort;
  * Measures current, voltage, and possibly other properties of an electric conductor
  */
 // TODO: Needs internal resistance so that it can update the current
+// TODO: Voltage should be measured between two points, so it doesn't make sense to combine the meters into one.
 public class ElectricMeter extends StandardMachineBase {
 
     public final ElectricPort a = electricPort("A");
