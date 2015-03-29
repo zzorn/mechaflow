@@ -35,11 +35,6 @@ public final class SignalPort extends PortBase {
         if (direction == PortDirection.INOUT) throw new IllegalArgumentException("A signal port must be either an input or output port, INOUT signal ports are not supported");
     }
 
-    @Override public void update(Time time) {
-        // TODO: Implement
-
-    }
-
     @Override public void propagate(Time time) {
         // Propagate our signal to the connected port
         if (getDirection() == PortDirection.OUT && isConnected()) {

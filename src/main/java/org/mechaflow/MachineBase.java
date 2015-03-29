@@ -19,16 +19,6 @@ public abstract class MachineBase implements Machine {
         return ports;
     }
 
-    @Override public final void update(Time time) {
-        // Update ports
-        for (Port port : ports) {
-            port.update(time);
-        }
-
-        // Update machine
-        doUpdate(time);
-    }
-
     @Override public final void propagate(Time time) {
         for (Port port : ports) {
             port.propagate(time);
@@ -40,12 +30,6 @@ public abstract class MachineBase implements Machine {
             port.disconnect();
         }
     }
-
-    /**
-     * Update the machine.
-     * @param time holds current simulation time and the time since the last call to doUpdate.
-     */
-    protected abstract void doUpdate(Time time);
 
     /**
      * @param port port to add to the machine.

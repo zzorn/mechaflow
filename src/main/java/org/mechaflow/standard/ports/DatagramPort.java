@@ -25,11 +25,6 @@ public final class DatagramPort extends PortBase {
         if (direction == PortDirection.INOUT) throw new IllegalArgumentException("A datagram port must be either an input or output port, INOUT datagram ports are not supported");
     }
 
-    @Override public void update(Time time) {
-        // TODO: Implement
-
-    }
-
     @Override public void propagate(Time time) {
         // TODO: Implement
         // TODO: Move datagrams to receiver, all at once, or with some delay per datagram?

@@ -1,6 +1,5 @@
 package org.mechaflow.standard.machines;
 
-import org.flowutils.MathUtils;
 import org.flowutils.time.Time;
 import org.mechaflow.standard.StandardMachineBase;
 import org.mechaflow.standard.ports.SignalPort;
@@ -42,7 +41,7 @@ public final class Oscillator extends StandardMachineBase {
 
      */
 
-    @Override protected void doUpdate(Time time) {
+    @Override public void update(Time time) {
         // Determine current wave phase
         if (reset.isHigh() || Float.isNaN(currentPhase)) {
             // Reset wave phase if reset is high, or if this is the first call to update.

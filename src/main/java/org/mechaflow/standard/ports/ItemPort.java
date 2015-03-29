@@ -25,11 +25,6 @@ public final class ItemPort extends PortBase {
         if (direction == PortDirection.INOUT) throw new IllegalArgumentException("An item port must be either an input or output port, INOUT item ports are not supported");
     }
 
-    @Override public void update(Time time) {
-        // TODO: Implement
-
-    }
-
     @Override public void propagate(Time time) {
         // TODO: Implement
         // TODO: Move some entities per time unit to receiver, depending on entity size and port movement speed

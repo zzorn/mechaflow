@@ -100,12 +100,6 @@ public interface Port {
     void propagate(Time time);
 
     /**
-     * Calculates any states in the port, and does other logic checking, such as failure checks.
-     * @param time holds current simulation time and elapsed time since the last call to update.
-     */
-    void update(Time time);
-
-    /**
      * @return the machine this port belongs to.
      */
     Machine getMachine();

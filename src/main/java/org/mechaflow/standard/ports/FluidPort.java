@@ -28,11 +28,6 @@ public final class FluidPort extends PortBase {
         super(name, PortDirection.INOUT, widthGauge, heightGauge);
     }
 
-    @Override public void update(Time time) {
-        // TODO: Implement
-
-    }
-
     @Override public void propagate(Time time) {
         // TODO: Implement
 

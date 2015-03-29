@@ -7,8 +7,7 @@ import org.flowutils.time.RealTime;
 import org.flowutils.time.Time;
 import org.mechaflow.entity.MachineComponent;
 import org.mechaflow.entity.MachineProcessor;
-import org.mechaflow.standard.machines.Oscillator;
-import org.mechaflow.standard.machines.SignalJunction;
+import org.mechaflow.standard.machines.*;
 
 /**
  *
@@ -32,7 +31,8 @@ public class MechaflowExample extends ServiceProviderBase {
     public void run() {
         init();
 
-        setupWorld();
+        //setupOscillatorTestWorld();
+        setupElectricityTestWorld();
 
         world.start();
 
@@ -40,7 +40,7 @@ public class MechaflowExample extends ServiceProviderBase {
     }
 
 
-    private void setupWorld() {
+    private void setupOscillatorTestWorld() {
         final Oscillator slowOsc = addMachine(new Oscillator());
         final Oscillator fastOsc = addMachine(new Oscillator());
         final PrintMachine view = addMachine(new PrintMachine());
@@ -67,6 +67,25 @@ public class MechaflowExample extends ServiceProviderBase {
 
         view.inputA.connect(slowOsc.signal);
         //view.inputB.connect(fastOsc.signal);
+    }
+
+    private void setupElectricityTestWorld() {
+        final Generator generator = addMachine(new Generator());
+        final Resistor resistor = addMachine(new Resistor(50));
+        final Resistor resistor2 = addMachine(new Resistor(100));
+        final Resistor resistor3 = addMachine(new Resistor(9850));
+        final ElectricMeter electricMeter = addMachine(new ElectricMeter());
+
+        final PrintMachine view = addMachine(new PrintMachine());
+
+        generator.plusPole.connect(electricMeter.a);
+        electricMeter.b.connect(resistor.a);
+        resistor.b.connect(resistor2.a);
+        resistor2.b.connect(resistor3.a);
+        resistor3.b.connect(generator.minusPole);
+
+        view.inputA.connect(electricMeter.measuredVoltage);
+        view.inputB.connect(electricMeter.measuredCurrent);
     }
 
     private <T extends Machine> T addMachine(final T machine) {

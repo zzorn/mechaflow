@@ -80,7 +80,7 @@ public final class PrintMachine extends StandardMachineBase {
         }, BUFFER_WIDTH, BUFFER_WIDTH/2);
     }
 
-    @Override protected void doUpdate(Time time) {
+    @Override public void update(Time time) {
         secondsLeft -= time.getSecondsSinceLastStep();
 
         if (secondsLeft <= 0) {
@@ -91,6 +91,10 @@ public final class PrintMachine extends StandardMachineBase {
             bBuffer.addLast(inputB.get());
 
             frame.repaint();
+
+            // DEBUG
+            System.out.print("A: " + inputA.get());
+            System.out.println("\t B: " + inputB.get());
         }
     }
 }

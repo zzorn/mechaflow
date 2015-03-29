@@ -16,7 +16,7 @@ public final class SignalJunction extends StandardMachineBase {
     public final SignalPort output4 = outputSignal("Output 4", "Receives the signal from the input");
     public final SignalPort output5 = outputSignal("Output 5", "Receives the signal from the input");
 
-    @Override protected void doUpdate(Time time) {
+    @Override public void update(Time time) {
         final float value = input.get();
         output1.set(value);
         output2.set(value);
