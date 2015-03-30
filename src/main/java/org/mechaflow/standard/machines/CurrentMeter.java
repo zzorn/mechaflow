@@ -17,20 +17,23 @@ public class CurrentMeter extends StandardMachineBase {
 
     @Override public void update(Time time) {
 
-        double chargeA = a.getCharge();
-        double chargeB = b.getCharge();
+        // Ignore any zero time steps, as they will produce infinite or NaN currents.
+        final double lastStepDurationSeconds = time.getLastStepDurationSeconds();
+        if (lastStepDurationSeconds > 0) {
+            double chargeA = a.getCharge();
+            double chargeB = b.getCharge();
 
-        double chargeMovedFromAToB = 0.5 * (chargeA - chargeB);
+            double chargeMovedFromAToB = 0.5 * (chargeA - chargeB);
 
-        // Current = A = MovedCharge / Second
-        // This may be infinite if the time step is zero.  To get around that, add some internal resistance to the ammeter.
-        double current =  chargeMovedFromAToB / time.getSecondsSinceLastStep();
+            // Current = A = MovedCharge / Second
+            double current =  chargeMovedFromAToB / lastStepDurationSeconds;
 
-        // Move the charge
-        a.changeCharge(-chargeMovedFromAToB);
-        b.changeCharge(chargeMovedFromAToB);
+            // Move the charge
+            a.changeCharge(-chargeMovedFromAToB);
+            b.changeCharge(chargeMovedFromAToB);
 
-        // Notify the listener.
-        measuredCurrent.set((float) current);
+            // Notify the listener.
+            measuredCurrent.set((float) current);
+        }
     }
 }

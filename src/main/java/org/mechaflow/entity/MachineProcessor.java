@@ -9,7 +9,7 @@ import org.flowutils.time.Time;
  */
 public final class MachineProcessor extends EntityProcessorBase {
 
-    private static final double DEFAULT_PROCESSING_INTERVAL_SECONDS = 0.1;
+    private static final double DEFAULT_PROCESSING_INTERVAL_SECONDS = 0.01;
     private static final boolean DEFAULT_CONCURRENT_PROCESSING = true;
 
     /**
@@ -35,6 +35,8 @@ public final class MachineProcessor extends EntityProcessorBase {
      */
     public MachineProcessor(double processingIntervalSeconds, boolean concurrentProcessing) {
         super(null, processingIntervalSeconds, concurrentProcessing, MachineComponent.class);
+
+        setMaxTimeStepsToAdvance(10);
     }
 
 

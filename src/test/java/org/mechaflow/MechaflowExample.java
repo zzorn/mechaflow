@@ -25,7 +25,7 @@ public class MechaflowExample extends ServiceProviderBase {
         time = new RealTime();
         world = addService(new ConcurrentWorld(time));
 
-        world.addProcessor(new MachineProcessor(0.1));
+        world.addProcessor(new MachineProcessor());
     }
 
     public void run() {
@@ -77,19 +77,22 @@ public class MechaflowExample extends ServiceProviderBase {
     private void setupElectricityTestWorld() {
         final Generator generator = addMachine(new Generator());
         final Resistor resistor = addMachine(new Resistor(100));
-        final Resistor resistor2 = addMachine(new Resistor(100));
-        final Resistor resistor3 = addMachine(new Resistor(10));
-        final CurrentMeter currentMeter = addMachine(new CurrentMeter());
+        final Resistor resistor2 = addMachine(new Resistor(110));
+        final Resistor resistor3 = addMachine(new Resistor(111));
+        final CurrentMeter currentMeter1 = addMachine(new CurrentMeter());
+        final CurrentMeter currentMeter2 = addMachine(new CurrentMeter());
 
         final PrintMachine view = addMachine(new PrintMachine());
 
-        generator.plusPole.connect(currentMeter.a);
-        currentMeter.b.connect(resistor.a);
-        resistor.b.connect(resistor2.a);
-        resistor2.b.connect(resistor3.a);
+        generator.plusPole.connect(currentMeter1.a);
+        currentMeter1.b.connect(resistor2.a);
+        resistor2.b.connect(currentMeter2.a);
+        currentMeter2.b.connect(resistor.a);
+        resistor.b.connect(resistor3.a);
         resistor3.b.connect(generator.minusPole);
 
-        view.inputB.connect(currentMeter.measuredCurrent);
+        view.inputA.connect(currentMeter1.measuredCurrent);
+        view.inputB.connect(currentMeter2.measuredCurrent);
     }
 
     private <T extends Machine> T addMachine(final T machine) {

@@ -19,7 +19,7 @@ public class Generator extends StandardMachineBase {
 
     // TODO: Temp values for testing
     private double volt = 5;
-    private double maxCurrent_A = 10;
+    private double maxCurrent_A = 100;
 
     @Override public void update(Time time) {
 
@@ -29,12 +29,24 @@ public class Generator extends StandardMachineBase {
         double chargeOnMinus = minusPole.getCharge();
 
         // Assuming parallel plates of equal size and distance with vacuum in between, the voltage between them is V = chargeDifference.
-        double voltageDifference = chargeOnPlus - chargeOnMinus;
+        double voltageDifference = (chargeOnPlus - chargeOnMinus);
         double targetChargeDifference = volt;
         double targetCharging = targetChargeDifference - voltageDifference;
 
         // Determine charge produced
-        double producedCharge = clamp(maxCurrent_A * time.getSecondsSinceLastStep(), 0, targetCharging);
+        double producedCharge = maxCurrent_A * time.getLastStepDurationSeconds();
+        if (targetCharging >= 0) {
+            if (producedCharge > targetCharging) {
+                producedCharge = targetCharging;
+            }
+        } else {
+            // Backwards charge on battery, discharge it
+            producedCharge = -producedCharge;
+
+            if (producedCharge < targetCharging) {
+                producedCharge = targetCharging;
+            }
+        }
 
         // Smooth it a bit (we could use some better integration than euler here maybe?)
 //        producedCharge *= 0.8;

@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.entityflow</groupId>
             <artifactId>entityflow</artifactId>
-            <version>0.7.0</version>
+            <version>0.7.1</version>
         </dependency>
 
         <!-- Unit testing -->
