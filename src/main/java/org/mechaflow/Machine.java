@@ -1,6 +1,7 @@
 package org.mechaflow;
 
 import org.flowutils.time.Time;
+import org.mechaflow.standard.heat.Heatable;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * A machine or part of a machine.
  * Has ports that can be connected to ports on other Machines.
  */
-public interface Machine {
+public interface Machine extends Heatable {
 
     /**
      * @return the ports available on this Machine.

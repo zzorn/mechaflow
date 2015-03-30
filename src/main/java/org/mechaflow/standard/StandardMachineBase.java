@@ -3,6 +3,7 @@ package org.mechaflow.standard;
 import org.mechaflow.MachineBase;
 import org.mechaflow.PortDirection;
 import org.mechaflow.standard.ports.ElectricPort;
+import org.mechaflow.standard.heat.Heatable;
 import org.mechaflow.standard.ports.SignalPort;
 
 /**
@@ -46,4 +47,65 @@ public abstract class StandardMachineBase extends MachineBase {
         return addPort(new ElectricPort(name, description));
     }
 
+    /**
+     * Discharges charges between the two provided ports through a resistance of the specified magnitude ove the specified time.
+     * Updates the charges at the two provided ports.
+     * Heats the provided heatable with the excess energy.
+     * @return the current flowing from port a to port b, in amperes.  Negative if flowing from port b to port a.
+     */
+    protected static double conductChargeThroughResistor(final ElectricPort electricPortA,
+                                                         final ElectricPort electricPortB,
+                                                         final double resistance,
+                                                         final double seconds,
+                                                         Heatable heatable) {
+        final double chargeA = electricPortA.getCharge();
+        final double chargeB = electricPortB.getCharge();
+
+        // If the charges are already equal, we don't have to do anything else, as we can't move any charge in that case
+        if (chargeA != chargeB && seconds > 0) {
+            // Determine electric field over the resistor
+            // Assuming parallel plates of equal size and distance with vacuum in between, the voltage between them is V = chargeDifference.
+            final double voltageDropFromAToB = (chargeA - chargeB);
+
+            // We can not move more charge than what we have at both ends, and we can only move the charge until it is balanced
+            final double mostMovableChargeFromAToB = 0.5 * (chargeA - chargeB);
+
+            // Determine current through the resistor (from a to b)
+            final double currentFromAToB;
+            if (resistance <= 0) {
+                // No resistance, move charges to balance them.
+                currentFromAToB = mostMovableChargeFromAToB;
+            }
+            else {
+                currentFromAToB = voltageDropFromAToB / resistance;
+            }
+
+            // Calculate amount of moved charge
+            // Ampere = Coulomb / Second => Coulomb = Ampere * Seconds.
+            double chargeMovedFromAToB = currentFromAToB * seconds;
+
+            // Clamp current to the max that can be moved
+            if (chargeMovedFromAToB >= 0) {
+                chargeMovedFromAToB = Math.min(chargeMovedFromAToB, mostMovableChargeFromAToB);
+            }
+            else {
+                chargeMovedFromAToB = Math.max(chargeMovedFromAToB, mostMovableChargeFromAToB);
+            }
+
+            // Move the charge
+            electricPortA.changeCharge(-chargeMovedFromAToB);
+            electricPortB.changeCharge(chargeMovedFromAToB);
+
+            // Determine heating power
+            double actualCurrent = chargeMovedFromAToB / seconds;
+            // Heat energy = P * seconds, P = I^2 * R.
+            heatable.addHeatEnergy(resistance * actualCurrent * actualCurrent * seconds);
+
+            return actualCurrent;
+        }
+        else {
+            // No charge moved, so no current
+            return 0;
+        }
+    }
 }

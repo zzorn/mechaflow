@@ -2,6 +2,7 @@ package org.mechaflow;
 
 import org.flowutils.Check;
 import org.flowutils.time.Time;
+import org.mechaflow.standard.heat.DefaultHeatable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import static org.flowutils.Check.notNull;
 /**
  *
  */
-public abstract class MachineBase implements Machine {
+public abstract class MachineBase extends DefaultHeatable implements Machine {
 
     private List<Port> ports;
 

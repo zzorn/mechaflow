@@ -15,25 +15,14 @@ public class CurrentMeter extends StandardMachineBase {
     public final SignalPort measuredCurrent = outputSignal("Measured current",
                                                            "The electrical current from a to b measured at this point, in amperes.");
 
+    private double internalResistance = 0.01;
+
     @Override public void update(Time time) {
 
-        // Ignore any zero time steps, as they will produce infinite or NaN currents.
-        final double lastStepDurationSeconds = time.getLastStepDurationSeconds();
-        if (lastStepDurationSeconds > 0) {
-            double chargeA = a.getCharge();
-            double chargeB = b.getCharge();
+        // Move charge through the meter, and get the current
+        double current = conductChargeThroughResistor(a, b, internalResistance, time.getLastStepDurationSeconds(), this);
 
-            double chargeMovedFromAToB = 0.5 * (chargeA - chargeB);
-
-            // Current = A = MovedCharge / Second
-            double current =  chargeMovedFromAToB / lastStepDurationSeconds;
-
-            // Move the charge
-            a.changeCharge(-chargeMovedFromAToB);
-            b.changeCharge(chargeMovedFromAToB);
-
-            // Notify the listener.
-            measuredCurrent.set((float) current);
-        }
+        // Notify the listener.
+        measuredCurrent.set((float) current);
     }
 }
