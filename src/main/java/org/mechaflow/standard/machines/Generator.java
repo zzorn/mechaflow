@@ -1,8 +1,11 @@
 package org.mechaflow.standard.machines;
 
+import org.flowutils.MathUtils;
 import org.flowutils.time.Time;
 import org.mechaflow.standard.StandardMachineBase;
 import org.mechaflow.standard.ports.ElectricPort;
+
+import static org.flowutils.MathUtils.*;
 
 /**
  *
@@ -16,26 +19,28 @@ public class Generator extends StandardMachineBase {
 
     // TODO: Temp values for testing
     private double volt = 5;
-    private double internalResistance_Ohm = 0.5;
-
-    private double maxCurrent_A = volt / internalResistance_Ohm;
+    private double maxCurrent_A = 10;
 
     @Override public void update(Time time) {
-        double averageVolt = 0.5 * (minusPole.getVoltage() + plusPole.getVoltage());
 
-        plusPole.setVoltage(averageVolt + 0.5 * volt);
-        minusPole.setVoltage(averageVolt - 0.5 * volt);
+        // Charge up the opposite poles, until the voltage over the generator is the drive voltage, but at most by max current
 
-        double current = 0.5 * (plusPole.getOutwardsCurrent() - minusPole.getOutwardsCurrent());
-        if (current > maxCurrent_A) {
-            current = maxCurrent_A;
-        }
-        else if (current < -maxCurrent_A) {
-            current = -maxCurrent_A;
-        }
+        double chargeOnPlus = plusPole.getCharge();
+        double chargeOnMinus = minusPole.getCharge();
 
-        plusPole.setOutwardsCurrent(current);
-        minusPole.setOutwardsCurrent(-current);
+        // Assuming parallel plates of equal size and distance with vacuum in between, the voltage between them is V = chargeDifference.
+        double voltageDifference = chargeOnPlus - chargeOnMinus;
+        double targetChargeDifference = volt;
+        double targetCharging = targetChargeDifference - voltageDifference;
 
+        // Determine charge produced
+        double producedCharge = clamp(maxCurrent_A * time.getSecondsSinceLastStep(), 0, targetCharging);
+
+        // Smooth it a bit (we could use some better integration than euler here maybe?)
+//        producedCharge *= 0.8;
+
+        // Update poles
+        plusPole.changeCharge(0.5 * producedCharge);
+        minusPole.changeCharge(-0.5 * producedCharge);
     }
 }

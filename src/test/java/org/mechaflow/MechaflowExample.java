@@ -41,6 +41,11 @@ public class MechaflowExample extends ServiceProviderBase {
 
 
     private void setupOscillatorTestWorld() {
+
+        // TODO: Make timestep actually fixed, just run more if we are lagging behind in real time!
+        // Variable timestep introduces a lot of noise into the algorithms!
+
+
         final Oscillator slowOsc = addMachine(new Oscillator());
         final Oscillator fastOsc = addMachine(new Oscillator());
         final PrintMachine view = addMachine(new PrintMachine());
@@ -71,21 +76,20 @@ public class MechaflowExample extends ServiceProviderBase {
 
     private void setupElectricityTestWorld() {
         final Generator generator = addMachine(new Generator());
-        final Resistor resistor = addMachine(new Resistor(50));
+        final Resistor resistor = addMachine(new Resistor(100));
         final Resistor resistor2 = addMachine(new Resistor(100));
-        final Resistor resistor3 = addMachine(new Resistor(9850));
-        final ElectricMeter electricMeter = addMachine(new ElectricMeter());
+        final Resistor resistor3 = addMachine(new Resistor(10));
+        final CurrentMeter currentMeter = addMachine(new CurrentMeter());
 
         final PrintMachine view = addMachine(new PrintMachine());
 
-        generator.plusPole.connect(electricMeter.a);
-        electricMeter.b.connect(resistor.a);
+        generator.plusPole.connect(currentMeter.a);
+        currentMeter.b.connect(resistor.a);
         resistor.b.connect(resistor2.a);
         resistor2.b.connect(resistor3.a);
         resistor3.b.connect(generator.minusPole);
 
-        view.inputA.connect(electricMeter.measuredVoltage);
-        view.inputB.connect(electricMeter.measuredCurrent);
+        view.inputB.connect(currentMeter.measuredCurrent);
     }
 
     private <T extends Machine> T addMachine(final T machine) {

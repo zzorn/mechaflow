@@ -11,8 +11,7 @@ public final class ElectricPort extends PortBase {
 
     // TODO: Information on maximum supported current and voltage, and handling of failure conditions
 
-    private double voltage;
-    private double outwardsCurrent;
+    private double charge; // In coulomb
 
     public ElectricPort(String name) {
         this(name, null);
@@ -37,37 +36,23 @@ public final class ElectricPort extends PortBase {
             if (hashCode() <= getConnectedPort().hashCode()) {
                 final ElectricPort connectedPort = (ElectricPort) getConnectedPort();
 
-                // Voltages should approach each other
-                double averageV = 0.5 * (voltage + connectedPort.voltage);
-                voltage = averageV;
-                connectedPort.voltage = averageV;
-
-                // Currents should be the same, but of opposite signs
-                double averageCurrent = 0.5 * (outwardsCurrent - connectedPort.outwardsCurrent);
-                outwardsCurrent = averageCurrent;
-                connectedPort.outwardsCurrent = -averageCurrent;
+                // Distribute charge
+                double averageCharge = 0.5 * (charge + connectedPort.charge);
+                charge = averageCharge;
+                connectedPort.charge = averageCharge;
             }
         }
-        else {
-            // Not connected, so keep the current at zero
-            outwardsCurrent = 0;
-        }
     }
 
-    public double getVoltage() {
-        return voltage;
+    public double getCharge() {
+        return charge;
     }
 
-    public void setVoltage(double voltage) {
-        this.voltage = voltage;
+    public void setCharge(double charge) {
+        this.charge = charge;
     }
 
-    public double getOutwardsCurrent() {
-        return outwardsCurrent;
+    public void changeCharge(double chargeDelta) {
+        this.charge += chargeDelta;
     }
-
-    public void setOutwardsCurrent(double outwardsCurrent) {
-        this.outwardsCurrent = outwardsCurrent;
-    }
-
 }
