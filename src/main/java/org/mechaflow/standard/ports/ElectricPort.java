@@ -44,14 +44,23 @@ public final class ElectricPort extends PortBase {
         }
     }
 
+    /**
+     * @return the charge in coulomb currently located in this port.
+     */
     public double getCharge() {
         return charge;
     }
 
+    /**
+     * @param charge charge to set the port to.
+     */
     public void setCharge(double charge) {
         this.charge = charge;
     }
 
+    /**
+     * @param chargeDelta change to add to the charge in the port.
+     */
     public void changeCharge(double chargeDelta) {
         this.charge += chargeDelta;
     }

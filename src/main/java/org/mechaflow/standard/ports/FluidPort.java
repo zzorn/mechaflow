@@ -13,6 +13,8 @@ public final class FluidPort extends PortBase {
 
     // TODO: Also keep track of fluid composition
 
+    // TODO: Keep mass / amount of matter constant, keep track of mass at each port (need volume of port area to calculate pressure?)
+
     private double pressure;
     private double flow;
 

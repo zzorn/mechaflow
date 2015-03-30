@@ -14,6 +14,9 @@ public final class RotaryPort extends PortBase {
     private double torque; // Sum of torques from inside this machine and from the connected port
     private double angularVelocity; // Update based on previous state and current torques
 
+    // TODO: Inertia
+    // TODO: angular momentum is what we have to retain in the system (angular velocity * inertia)
+
     public RotaryPort(String name) {
         this(name, DEFAULT_MEDIUM_SIZE_GAUGE);
     }
