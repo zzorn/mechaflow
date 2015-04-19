@@ -77,10 +77,12 @@ public class MechaflowExample extends ServiceProviderBase {
     private void setupElectricityTestWorld() {
         final Generator generator = addMachine(new Generator());
         final Resistor resistor = addMachine(new Resistor(100));
-        final Resistor resistor2 = addMachine(new Resistor(110));
-        final Resistor resistor3 = addMachine(new Resistor(111));
+        final Resistor resistor2 = addMachine(new Resistor(100));
+        final Resistor resistor3 = addMachine(new Resistor(1000000000));
         final CurrentMeter currentMeter1 = addMachine(new CurrentMeter());
         final CurrentMeter currentMeter2 = addMachine(new CurrentMeter());
+        final VoltMeter voltMeter1 = addMachine(new VoltMeter());
+        final VoltMeter voltMeter2 = addMachine(new VoltMeter());
 
         final PrintMachine view = addMachine(new PrintMachine());
 
@@ -90,9 +92,10 @@ public class MechaflowExample extends ServiceProviderBase {
         currentMeter2.b.connect(resistor.a);
         resistor.b.connect(resistor3.a);
         resistor3.b.connect(generator.minusPole);
+//        voltMeter1.a.connect(resistor.a);
 
         view.inputA.connect(currentMeter1.measuredCurrent);
-        view.inputB.connect(currentMeter2.measuredCurrent);
+//        view.inputB.connect(currentMeter2.measuredCurrent);
     }
 
     private <T extends Machine> T addMachine(final T machine) {

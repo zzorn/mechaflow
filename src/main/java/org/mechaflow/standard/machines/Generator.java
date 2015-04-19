@@ -54,5 +54,7 @@ public class Generator extends StandardMachineBase {
         // Update poles
         plusPole.changeCharge(0.5 * producedCharge);
         minusPole.changeCharge(-0.5 * producedCharge);
+//        plusPole.setCharge(0.5 * volt);
+//        minusPole.setCharge(-0.5 * volt);
     }
 }

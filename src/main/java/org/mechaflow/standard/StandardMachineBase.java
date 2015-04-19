@@ -48,7 +48,7 @@ public abstract class StandardMachineBase extends MachineBase {
     }
 
     /**
-     * Discharges charges between the two provided ports through a resistance of the specified magnitude ove the specified time.
+     * Discharges charges between the two provided ports through a resistance of the specified magnitude over the specified time.
      * Updates the charges at the two provided ports.
      * Heats the provided heatable with the excess energy.
      * @return the current flowing from port a to port b, in amperes.  Negative if flowing from port b to port a.
@@ -63,6 +63,43 @@ public abstract class StandardMachineBase extends MachineBase {
 
         // If the charges are already equal, we don't have to do anything else, as we can't move any charge in that case
         if (chargeA != chargeB && seconds > 0) {
+
+            /*
+
+            I = V / R
+            P = V * I = I^2 * R = V^2 / R
+            P = energy lost to heating, J/s
+            I = current, A
+            R = resistance, Ohm
+            V = voltage drop, V
+
+            A = C/s
+            V = W/A = J/C
+
+
+            We know:
+            - The charge at both conductors connecting to the resistor
+            - The resistance of the resistor in ohms
+
+            We want to calculate:
+            - The voltage drop over the resistor
+              Which gives us
+              - The current through the resistor (current = voltageDrop / resistance)
+                Which gives us:
+                - The new charges at the connected conductors (charge delta = current / time)
+                - The energy converted to heat (heat energy = current^2 * resistance)
+
+            Calculation:
+            P = V^2 / R
+            V^2 = P * R
+            V = Sqrt(P * R)
+            V = Sqrt( ... )
+
+
+             */
+
+
+
             // Determine electric field over the resistor
             // Assuming parallel plates of equal size and distance with vacuum in between, the voltage between them is V = chargeDifference.
             final double voltageDropFromAToB = (chargeA - chargeB);
