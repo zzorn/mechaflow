@@ -69,12 +69,19 @@ public abstract class StandardMachineBase extends MachineBase {
             I = V / R
             P = V * I = I^2 * R = V^2 / R
             P = energy lost to heating, J/s
+            P = (VQ) / t
             I = current, A
             R = resistance, Ohm
             V = voltage drop, V
 
             A = C/s
             V = W/A = J/C
+
+            currentDensity = conductivity * electricField
+            conductivity = (1/Ohm) * m
+            currentDensity = A/m2
+            electricField = V/m = N/C
+            electricField = - PotentialDifference / distance
 
 
             We know:
@@ -93,7 +100,15 @@ public abstract class StandardMachineBase extends MachineBase {
             P = V^2 / R
             V^2 = P * R
             V = Sqrt(P * R)
-            V = Sqrt( ... )
+            V = energyLostToHeat / charge
+            P = energy lost to heating
+            P = V^2 / R
+            V = (V^2 / R) / charge
+            charge * V = (V^2 / R)
+            charge = (V^2 / R) / V
+            charge = V / R
+            R * charge = V
+            V = R * charge
 
 
              */
