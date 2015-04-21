@@ -76,9 +76,9 @@ public class MechaflowExample extends ServiceProviderBase {
 
     private void setupElectricityTestWorld() {
         final Generator generator = addMachine(new Generator());
-        final Resistor resistor = addMachine(new Resistor(100));
-        final Resistor resistor2 = addMachine(new Resistor(100));
-        final Resistor resistor3 = addMachine(new Resistor(1000000000));
+        final Resistor resistor = addMachine(new Resistor(10));
+        final Resistor resistor2 = addMachine(new Resistor(70));
+        final Resistor resistor3 = addMachine(new Resistor(20));
         final CurrentMeter currentMeter1 = addMachine(new CurrentMeter());
         final CurrentMeter currentMeter2 = addMachine(new CurrentMeter());
         final VoltMeter voltMeter1 = addMachine(new VoltMeter());

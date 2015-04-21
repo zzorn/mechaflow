@@ -19,7 +19,7 @@ public class Generator extends StandardMachineBase {
 
     // TODO: Temp values for testing
     private double volt = 5;
-    private double maxCurrent_A = 100;
+    private double maxCurrent_A = 10;
 
     @Override public void update(Time time) {
 
@@ -29,9 +29,9 @@ public class Generator extends StandardMachineBase {
         double chargeOnMinus = minusPole.getCharge();
 
         // Assuming parallel plates of equal size and distance with vacuum in between, the voltage between them is V = chargeDifference.
-        double voltageDifference = (chargeOnPlus - chargeOnMinus);
-        double targetChargeDifference = volt;
-        double targetCharging = targetChargeDifference - voltageDifference;
+        double voltageDifference = (chargeOnPlus - chargeOnMinus) / StandardMachineBase.VACUUM_PERMITTIVITY;
+        double targetVoltageDifference = volt;
+        double targetCharging = (targetVoltageDifference - voltageDifference) * StandardMachineBase.VACUUM_PERMITTIVITY;
 
         // Determine charge produced
         double producedCharge = maxCurrent_A * time.getLastStepDurationSeconds();

@@ -11,6 +11,8 @@ import org.mechaflow.standard.ports.SignalPort;
  */
 public abstract class StandardMachineBase extends MachineBase {
 
+    public static final double VACUUM_PERMITTIVITY = 8.854187817 * Math.pow(10, -12); // In Farads/meter
+
     // Signals
 
     protected final SignalPort inputSignal(String name) {
@@ -65,25 +67,6 @@ public abstract class StandardMachineBase extends MachineBase {
         if (chargeA != chargeB && seconds > 0) {
 
             /*
-
-            I = V / R
-            P = V * I = I^2 * R = V^2 / R
-            P = energy lost to heating, J/s
-            P = (VQ) / t
-            I = current, A
-            R = resistance, Ohm
-            V = voltage drop, V
-
-            A = C/s
-            V = W/A = J/C
-
-            currentDensity = conductivity * electricField
-            conductivity = (1/Ohm) * m
-            currentDensity = A/m2
-            electricField = V/m = N/C
-            electricField = - PotentialDifference / distance
-
-
             We know:
             - The charge at both conductors connecting to the resistor
             - The resistance of the resistor in ohms
@@ -97,27 +80,24 @@ public abstract class StandardMachineBase extends MachineBase {
                 - The energy converted to heat (heat energy = current^2 * resistance)
 
             Calculation:
-            P = V^2 / R
-            V^2 = P * R
-            V = Sqrt(P * R)
-            V = energyLostToHeat / charge
-            P = energy lost to heating
-            P = V^2 / R
-            V = (V^2 / R) / charge
-            charge * V = (V^2 / R)
-            charge = (V^2 / R) / V
-            charge = V / R
-            R * charge = V
-            V = R * charge
+              voltageDrop = distance * chargeDiff / (permittivity * area)
 
+              Assume area and distance approach some small similar value (e.g. 1mm and 1mm^2).  Then:
+              voltageDrop = chargeDiff / permittivity
+
+              permittivity is close to vacuumPermittivity for e.g. metal film resistors
+
+              Thus
+              voltageDrop = chargeDifference / vacuumPermittivity
 
              */
 
 
-
             // Determine electric field over the resistor
-            // Assuming parallel plates of equal size and distance with vacuum in between, the voltage between them is V = chargeDifference.
-            final double voltageDropFromAToB = (chargeA - chargeB);
+            // Assuming parallel plates of equal size and distance with generic material
+            // with permittivity close to vacuum permittivity in between
+            final double voltageDropFromAToB = (chargeA - chargeB) / VACUUM_PERMITTIVITY;
+            System.out.println("voltageDropFromAToB = " + voltageDropFromAToB);
 
             // We can not move more charge than what we have at both ends, and we can only move the charge until it is balanced
             final double mostMovableChargeFromAToB = 0.5 * (chargeA - chargeB);
