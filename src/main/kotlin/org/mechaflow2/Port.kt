@@ -52,7 +52,7 @@ interface Port {
      * @return size of the port, expressed as 2^sizeGauge meters.
      * *         Ports of different sizes can be connected.
      */
-    val sizeGauge: Int
+    val size: PortSize
 
     /**
      * @return the port that this port is connected to, or null if it is not connected.
@@ -63,11 +63,6 @@ interface Port {
      * @return the machine this port belongs to.
      */
     val machine: Machine?
-
-    /**
-     * @return approximate width and height of the port, in meters.
-     */
-    fun sizeMeters() : Double = Math.pow(2.0, sizeGauge.toDouble())
 
     /**
      * Attempts to connect this port to the specified port.

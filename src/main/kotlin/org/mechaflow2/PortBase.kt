@@ -1,10 +1,5 @@
 package org.mechaflow2
 
-import org.flowutils.Check.notNull
-
-val DEFAULT_LARGE_SIZE_GAUGE = 0
-val DEFAULT_MEDIUM_SIZE_GAUGE = -2
-val DEFAULT_SMALL_SIZE_GAUGE = -4
 
 /**
  * Creates a new port.
@@ -17,7 +12,7 @@ val DEFAULT_SMALL_SIZE_GAUGE = -4
 abstract class PortBase(override val name: String,
                         override val direction: PortDirection = PortDirection.INOUT,
                         override val description: String? = null,
-                        override var sizeGauge: Int = DEFAULT_MEDIUM_SIZE_GAUGE) : Port {
+                        override var size: PortSize = PortSize.MEDIUM) : Port {
 
     override var connectedPort: Port? = null
     override lateinit var machine: Machine
@@ -27,8 +22,6 @@ abstract class PortBase(override val name: String,
     }
 
     override fun connect(otherPort: Port) {
-        notNull(otherPort, "otherPort")
-
         // If already connected, no need to do anything
         if (connectedPort === otherPort) return
 
@@ -71,11 +64,11 @@ abstract class PortBase(override val name: String,
     /**
      * Called when connecting to another port.
      */
-    protected abstract fun onConnected(otherPort: Port)
+    protected open fun onConnected(otherPort: Port) {}
 
     /**
      * Called when disconnecting from a port.
      */
-    protected abstract fun onDisconnected(previousConnectedPort: Port)
+    protected open fun onDisconnected(previousConnectedPort: Port) {}
 
 }

@@ -17,7 +17,7 @@ import org.mechaflow.PortDirection;
 // NOTE: Signals can be used instead of electricity to transport information and do computation that electricity would
 // NOTE  normally have been used for
 // NOTE: If we use power ports, we only need to update things when a state changes, speeding up processing considerably
-public final class ElectricPort extends PortBase {
+@Deprecated public final class ElectricPort extends PortBase {
 
     // TODO: Information on maximum supported current and voltage, and handling of failure conditions
 

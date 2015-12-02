@@ -9,7 +9,8 @@ import org.mechaflow.PortDirection;
  */
 public final class RotaryPort extends PortBase {
 
-    // TODO: Information on maximum supported torque and velocity, and handling of failure conditions
+    // LATER: Information on maximum supported torque and velocity, and handling of failure conditions
+
 
     private double torque; // Sum of torques from inside this machine and from the connected port
     private double angularVelocity; // Update based on previous state and current torques
