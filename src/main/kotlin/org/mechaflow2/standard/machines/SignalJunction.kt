@@ -1,29 +1,27 @@
 package org.mechaflow2.standard.machines
 
 import org.flowutils.time.Time
-import org.mechaflow2.MachineBase
-import org.mechaflow2.PortDirection
-import org.mechaflow2.standard.ports.SignalPort
+import org.mechaflow2.standard.StandardMachineBase
 
 
 /**
  * Shares a single input signal with many outputs.
  */
-class SignalJunction : MachineBase() {
+class SignalJunction : StandardMachineBase() {
 
-    val input = addPort(SignalPort("Input", PortDirection.IN, description = "Input signal to distribute to the outputs"))
-    val output1 = addPort(SignalPort("Output 1", PortDirection.OUT, description = "Receives the signal from the input"))
-    val output2 = addPort(SignalPort("Output 2", PortDirection.OUT, description = "Receives the signal from the input"))
-    val output3 = addPort(SignalPort("Output 3", PortDirection.OUT, description = "Receives the signal from the input"))
-    val output4 = addPort(SignalPort("Output 4", PortDirection.OUT, description = "Receives the signal from the input"))
-    val output5 = addPort(SignalPort("Output 5", PortDirection.OUT, description = "Receives the signal from the input"))
+    val input = inputSignal("Input", "Input signal to distribute to the outputs")
+    val output1 = outputSignal("Output 1", "Receives the signal from the input")
+    val output2 = outputSignal("Output 2", "Receives the signal from the input")
+    val output3 = outputSignal("Output 3", "Receives the signal from the input")
+    val output4 = outputSignal("Output 4", "Receives the signal from the input")
+    val output5 = outputSignal("Output 5", "Receives the signal from the input")
 
     override fun update(time: Time) {
-        val value = input.value
-        output1.value = value
-        output2.value = value
-        output3.value = value
-        output4.value = value
-        output5.value = value
+        val inputValue = input.value
+        output1.value = inputValue
+        output2.value = inputValue
+        output3.value = inputValue
+        output4.value = inputValue
+        output5.value = inputValue
     }
 }

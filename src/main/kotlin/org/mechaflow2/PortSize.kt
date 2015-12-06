@@ -10,8 +10,17 @@ data class PortSize(val gauge: Int = PortSize.MEDIUM_GAUGE) {
     /**
      * Approximate width and height of the port, in meters.
      */
-    val sizeMeters : Double
-        get() = Math.pow(2.0, gauge.toDouble())
+    val sizeMeters : Double = Math.pow(2.0, gauge.toDouble())
+
+    /**
+     * Diameter of the internal part of the port (e.g. inner pipe diameter)
+     */
+    val internalDiameter : Double = sizeMeters * INTERNAL_DIAMETER_FRACTION
+
+    /**
+     * Area of the internal part of the port (e.g. inner pipe area)
+     */
+    val internalArea : Double = Math.PI * Math.pow(0.5 * internalDiameter, 2.0)
 
 
     companion object {
@@ -22,6 +31,8 @@ data class PortSize(val gauge: Int = PortSize.MEDIUM_GAUGE) {
         public val SMALL = PortSize(SMALL_GAUGE)
         public val MEDIUM = PortSize(MEDIUM_GAUGE)
         public val LARGE = PortSize(LARGE_GAUGE)
+
+        private const val INTERNAL_DIAMETER_FRACTION = 0.8
     }
 
 }
