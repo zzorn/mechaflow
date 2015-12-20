@@ -10,12 +10,21 @@ import org.mechaflow2.PortSize
  * A port for transporting fluids (liquids, gases, and maybe grainy loose matter as well) between machines.
  */
 class FluidPort(name: String,
-                val fluidPortal: FluidPortal,
+                initialFluidPortal: FluidPortal? = null,
                 description: String? = null,
                 size: PortSize = PortSize.MEDIUM,
                 val roughness_mm: Double = 1.0) : PortBase(name, PortDirection.INOUT, description, size) {
 
     // TODO: Information on maximum supported pressure and flow, and handling of failure conditions
+
+    private var fluidPortal: FluidPortal? = initialFluidPortal
+        set(value) {
+            field = value
+            if (field == null) {
+                currentFlowSpeed_m_per_s = 0.0
+            }
+        }
+
 
     private var currentFlowSpeed_m_per_s = 0.0
 
@@ -27,21 +36,22 @@ class FluidPort(name: String,
 
     override fun propagate(time: Time) {
         val otherPort: FluidPort? = connectedPort as FluidPort?
-        if (otherPort != null && isSlave(otherPort)) {
+        val ownPortal = fluidPortal
+        val otherPortal = otherPort?.fluidPortal
+        if (otherPort != null && isSlave(otherPort) && ownPortal != null && otherPortal != null) {
             // If we are the master port, we handle the propagation
 
-            val otherPortal = otherPort.fluidPortal
 
             val area_m2 = size.internalArea
             val time_s = time.lastStepDurationSeconds
-            val p1 = fluidPortal.pressure_Pa
+            val p1 = ownPortal.pressure_Pa
             val p2 = otherPortal.pressure_Pa
             var deltaP = p1 - p2
             if (deltaP != 0.0) {
 
                 val outFlow = deltaP > 0
-                val density = if (outFlow) fluidPortal.density else otherPortal.density
-                val viscosity = if (outFlow) fluidPortal.viscosity else otherPortal.viscosity
+                val density = if (outFlow) ownPortal.density else otherPortal.density
+                val viscosity = if (outFlow) ownPortal.viscosity else otherPortal.viscosity
                 val portInternalDiameter = size.internalDiameter
                 val portLength = portInternalDiameter * PORT_LENGTH_RELATED_TO_DIAMETER
 
@@ -60,7 +70,7 @@ class FluidPort(name: String,
 
                 // Move fluid between portals
                 val movedVolume = area_m2 * currentFlowSpeed_m_per_s * time_s
-                fluidPortal.moveFluid(movedVolume, otherPortal)
+                ownPortal.moveFluid(movedVolume, otherPortal)
             }
         }
     }
