@@ -52,7 +52,7 @@ public final class Oscillator extends StandardMachineBase {
             final float wavelength = this.wavelength.get();
             if (wavelength != 0) {
                 // Allow negative wavelengths as well, it will simply advance the phase backward.
-                currentPhase += time.getSecondsSinceLastStepAsFloat() / wavelength;
+                currentPhase += time.getSecondsSinceLastStep() / wavelength;
             }
         }
 

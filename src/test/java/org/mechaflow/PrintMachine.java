@@ -1,6 +1,7 @@
 package org.mechaflow;
 
-import org.flowutils.collections.ringbuffer.RingBufferFloat;
+import org.flowutils.collections.ringbuffer.ArrayRingBuffer;
+import org.flowutils.collections.ringbuffer.RingBuffer;
 import org.flowutils.time.Time;
 import org.mechaflow.standard.StandardMachineBase;
 import org.mechaflow.standard.ports.SignalPort;
@@ -23,8 +24,8 @@ public final class PrintMachine extends StandardMachineBase {
     public final SignalPort inputB = inputSignal("Inout B");
     public final SignalPort updateInterval = inputSignal("Update Interval", 0.001f, "Seconds between updates");
 
-    private final RingBufferFloat aBuffer = new RingBufferFloat(BUFFER_WIDTH);
-    private final RingBufferFloat bBuffer = new RingBufferFloat(BUFFER_WIDTH);
+    private final RingBuffer<Float> aBuffer = new ArrayRingBuffer<>(BUFFER_WIDTH);
+    private final RingBuffer<Float> bBuffer = new ArrayRingBuffer<>(BUFFER_WIDTH);
 
     private double secondsLeft = 0;
 
@@ -43,7 +44,7 @@ public final class PrintMachine extends StandardMachineBase {
                 float maxA = Float.NEGATIVE_INFINITY;
                 float minB = Float.POSITIVE_INFINITY;
                 float maxB = Float.NEGATIVE_INFINITY;
-                for (int i = 0; i < aBuffer.getSize(); i++) {
+                for (int i = 0; i < aBuffer.size(); i++) {
                     maxA = max(maxA, aBuffer.get(i));
                     minA = min(minA, aBuffer.get(i));
                     maxB = max(maxB, bBuffer.get(i));
@@ -60,7 +61,7 @@ public final class PrintMachine extends StandardMachineBase {
                 for (int x = 0; x < width; x++) {
                     int index = (int) map(x, 0, width -1, BUFFER_WIDTH-1, 0);
 
-                    if (index < aBuffer.getSize()) {
+                    if (index < aBuffer.size()) {
                         int aPos = (int) map(aBuffer.getFromEnd(index), minA, maxA, height, 0);
                         int bPos = (int) map(bBuffer.getFromEnd(index), minB, maxB, height, 0);
 
